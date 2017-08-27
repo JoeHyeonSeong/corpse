@@ -28,20 +28,21 @@ public abstract class InGameObject : MonoBehaviour {
     protected virtual void Awake()
     {
 
-            if (currentStatus==ActiveStatus.activating)
-            {
-                Activate();
-            }
-            else if(currentStatus==ActiveStatus.deactivating)
-            {
-                Deactivate();
-            }
-       
         Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
-        GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y;
+        GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y*10;
     }
 
-
+    protected virtual void Start()
+    {
+        if (currentStatus == ActiveStatus.activating)
+        {
+            Activate();
+        }
+        else if (currentStatus == ActiveStatus.deactivating)
+        {
+            Deactivate();
+        }
+    }
 
     /// <summary>
     /// convert currentStatus to true

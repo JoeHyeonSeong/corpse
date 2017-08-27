@@ -9,20 +9,23 @@ public class LaserWall : Wall{
     public Dir4 Dir
     {
         get { return dir; }
-        set { dir = value; }
-    }
-    protected override void Awake()
-    {
-        base.Awake();
     }
 
 
     public override void Activate()
     {
         base.Activate();
-        myLaser = Instantiate<Laser>(Resources.Load<Laser>("Prefab/InGameObject/Laser")
-            ,transform.position,Quaternion.identity,this.transform.parent);
-        myLaser.Dir = this.dir;
+        if (myLaser == null)
+        {
+            myLaser = Instantiate<Laser>(Resources.Load<Laser>("Prefab/InGameObject/Laser")
+            , transform.position, Quaternion.identity, this.transform.parent);
+            myLaser.Dir = this.dir;
+        }
+        else
+        {
+            myLaser.gameObject.SetActive(true);
+        }
+        myLaser.Resize();
     }
 
     public override void Deactivate()
@@ -31,7 +34,7 @@ public class LaserWall : Wall{
         if (myLaser != null)
         {
 
-            Destroy(myLaser.gameObject);
-        }
+            myLaser.gameObject.SetActive(false);
+       }
     }
 }

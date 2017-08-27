@@ -4,19 +4,10 @@ using UnityEngine;
 
 public class Laser : InGameObject
 {
-    protected Position endPos;
     protected Dir4 dir;
     public Dir4 Dir { get { return dir; } set { dir = value; } } 
     protected const int maxLength = 20;
-    protected override void Awake()
-    {
-        base.Awake();
-    }
 
-    private void Start()
-    {
-        Resize();
-    }
 
     public void Touch(LoadedObject who)
     {
@@ -51,22 +42,39 @@ public class Laser : InGameObject
         {
             tempEndPos = currentPos + Direction.Dir4ToPos(dir) * maxLength;
         }
-        endPos = tempEndPos;
-        Vector2 size;
-        Vector2 offset;
-        Position laserPos = endPos - currentPos;
+        GetComponent<SpriteRenderer>().sortingOrder = (tempEndPos.Y<currentPos.Y)?-tempEndPos.Y*10-1:-currentPos.Y*10-1;
+
+        Position laserPos = tempEndPos - currentPos;
+        int length;
         if (Mathf.Abs(laserPos.X) > Mathf.Abs(laserPos.Y))
         {
-            size = new Vector2(laserPos.X, 1);
-            offset = new Vector2(laserPos.X / 2f, 0);
+            length = laserPos.X;
         }
         else
         {
-            size = new Vector2(1, laserPos.Y);
-            offset = new Vector2(0, laserPos.Y / 2f);
+            length = laserPos.Y;
         }
-        GetComponent<BoxCollider2D>().size = new Vector2(Mathf.Abs(size.x),Mathf.Abs(size.y));
-        GetComponent<BoxCollider2D>().offset = offset;
-        GetComponent<SpriteRenderer>().size = size;
+        GetComponent<BoxCollider2D>().size = new Vector2(1,Mathf.Abs(length));
+        GetComponent<BoxCollider2D>().offset = new Vector2(0,Mathf.Abs(length/2f));
+        GetComponent<SpriteRenderer>().size = new Vector2(1, Mathf.Abs(length));
+        //rotate
+        switch (dir)
+        {
+            case Dir4.Up:
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+                break;
+            case Dir4.Left:
+                transform.rotation = Quaternion.Euler(0, 0, 90);
+                break;
+            case Dir4.Down:
+                transform.rotation = Quaternion.Euler(0, 0, 180);
+                break;
+            case Dir4.Right:
+                transform.rotation = Quaternion.Euler(0, 0, 270);
+                break;
+            default:
+                Debug.Log("오류");
+                break;
+        }
     }
 }
