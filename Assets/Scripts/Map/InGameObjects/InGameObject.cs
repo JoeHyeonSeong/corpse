@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class InGameObject : MonoBehaviour {
+
+    public enum ActiveStatus
+    {
+        activating,
+        deactivating,
+        non_activatable
+    }
     /// <summary>
     /// current position of gameObject
     /// </summary>
@@ -11,41 +18,37 @@ public abstract class InGameObject : MonoBehaviour {
     /// return current position of game Object(read only)
     /// </summary>
     public Position CurrentPos { get { return currentPos; } }
+    [SerializeField]
     /// <summary>
-    /// if can't activate-> null else if activated->true else->false
+    /// if can't activate-> non_activatable else if activated->activating else->deactivating
     /// </summary>
-    protected bool? currentStatus;
-
-
-    /// <summary>
-    /// gain setting from data
-    /// </summary>
-    /// <param name="data"></param>
-    public virtual void InitialSetting(InGameObjectData data)
+    protected ActiveStatus currentStatus;
+    public ActiveStatus CurrentStatus
+    { get { return currentStatus; } }
+    protected virtual void Awake()
     {
-        if(data.initialStatus!=null)
-        {
-            if((bool)data.initialStatus)
+
+            if (currentStatus==ActiveStatus.activating)
             {
                 Activate();
             }
-            else
+            else if(currentStatus==ActiveStatus.deactivating)
             {
                 Deactivate();
             }
-        }
-        
-        currentPos = new Position(data.pos);
-        transform.position =currentPos.ToVector3();
        
+        Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
+        GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y;
     }
+
+
 
     /// <summary>
     /// convert currentStatus to true
     /// </summary>
     public virtual void Activate()
     {
-        currentStatus = true;
+        currentStatus = ActiveStatus.activating;
     }
 
     /// <summary>
@@ -53,6 +56,16 @@ public abstract class InGameObject : MonoBehaviour {
     /// </summary>
     public virtual void Deactivate()
     {
-        currentStatus = false;
+        currentStatus = ActiveStatus.deactivating;
+    }
+
+    /// <summary>
+    /// change position to des
+    /// </summary>
+    /// <param name="des"></param>
+    public virtual void Teleport(Position des)
+    {
+        currentPos = des;
+        transform.position = currentPos.ToVector3();
     }
 }

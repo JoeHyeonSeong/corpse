@@ -13,13 +13,9 @@ public class Wall : LoadedObject {
         
     }
 
-    public override void Activate()
+    protected override void Awake()
     {
-        
-    }
-
-    public override void Deactivate()
-    {
-        
+        base.Awake();
+        isObstacle = true;
     }
 }

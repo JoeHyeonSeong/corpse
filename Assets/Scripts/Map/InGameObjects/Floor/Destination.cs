@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Destination : Floor{
+    protected override void Awake()
+    {
+        base.Awake();
+    }
 
-    public override void Touched(MovableObject who)
+
+    public override void Step(MovableObject who)
     {
         if(who.GetType()==typeof(Ball))
         {
-            //game clear
+            Debug.Log("game clear");
         }
     }
 }

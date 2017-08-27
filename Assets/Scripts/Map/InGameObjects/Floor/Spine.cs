@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Spine : Floor {
-    public override void Touched(MovableObject who)
+
+    protected override void Awake()
     {
-        if(currentStatus==true)
+        base.Awake();
+    }
+
+
+    public override void Step(MovableObject who)
+    {
+        if(currentStatus>0)
         {
             if(who.GetType()==typeof(DestroyableObject))
             ((DestroyableObject)who).Destroy();

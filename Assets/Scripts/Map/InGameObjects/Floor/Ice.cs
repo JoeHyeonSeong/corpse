@@ -2,9 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ice : Floor {
-    public override void Touched(MovableObject who)
+public class Ice : Floor
+{
+    protected override void Awake()
     {
-        who.Move(who.CurrentPos+who.MoveDir,false);
+        base.Awake();
+    }
+
+
+    public override void Step(MovableObject who)
+    {
+        who.Move(who.CurrentPos + who.MoveDir);
+
     }
 }

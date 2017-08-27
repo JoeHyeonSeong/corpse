@@ -8,27 +8,37 @@ public class GenPoint :Floor {
     public static GenPoint ActivatingGenPoint { get { return activatingGenPoint; } }
     public bool IsActivatedGenPoint { get { return this == activatingGenPoint; } }
 
-    public override void Touched(MovableObject who)
+    protected override void Awake()
     {
-        activatingGenPoint.DeactivateGenPoint();
-        ActivateGenPoint();
+        base.Awake();
+    }
+
+    public override void Step(MovableObject who)
+    {
+        if (activatingGenPoint != this)
+        {
+            activatingGenPoint.Deactivate();
+            Activate();
+        }
     }
 
 
     /// <summary>
     /// if this genpoint is activating, deactivate
     /// </summary>
-    protected void DeactivateGenPoint()
+    public override void Deactivate()
     {
+        base.Deactivate();
         if(IsActivatedGenPoint)
         {
 
         }
     }
 
-    protected void ActivateGenPoint()
+    public override void Activate()
     {
-        if(!IsActivatedGenPoint)
+        base.Activate();
+        if (!IsActivatedGenPoint)
         {
             activatingGenPoint = this;
         }
