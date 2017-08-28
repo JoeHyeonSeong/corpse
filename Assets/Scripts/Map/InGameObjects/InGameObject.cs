@@ -29,7 +29,7 @@ public abstract class InGameObject : MonoBehaviour {
     {
 
         Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
-        GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y*10;
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y*10;
     }
 
     protected virtual void Start()

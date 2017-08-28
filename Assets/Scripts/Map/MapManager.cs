@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapManager : MonoBehaviour {
+    GameObject currentMapPrefs;
     /// <summary>
     ///objects in one block [pos.x,pos.y] can find with Position
     /// </summary>
@@ -23,7 +24,7 @@ public class MapManager : MonoBehaviour {
     private void GenerateMap()
     {
         HandOverData.Stagenum = 1;
-        GameObject currentMapPrefs=Resources.Load<GameObject>("Prefab/Map/Stage"+HandOverData.Stagenum.ToString());
+       currentMapPrefs=Resources.Load<GameObject>("Prefab/Map/Stage"+HandOverData.Stagenum.ToString());
         Instantiate(currentMapPrefs);
     }
 

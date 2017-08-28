@@ -12,6 +12,33 @@
         this.y = y;
     }
 
+    public override bool Equals(object obj)
+    {
+        if (obj == null)
+            return false;
+
+        if (GetType() != obj.GetType())
+            return false;
+
+        Position point = (Position)obj;
+
+        return (x ==point.x && y == point.y);
+    }
+
+    public override int GetHashCode()
+    {
+        return x ^ y;
+    }
+
+    public static bool operator ==(Position pos1, Position pos2)
+    {
+        return Equals(pos1,pos2);
+    }
+
+    public static bool operator !=(Position pos1, Position pos2)
+    {
+        return !Equals(pos1, pos2);
+    }
 
 
     public static Position operator +(Position pos1, Position pos2)

@@ -15,6 +15,4 @@ public class HistoryManager : MonoBehaviour {
         instance = this;
         moveStack = new Stack<List<MoveHistory>>();
     }
-
-
 }

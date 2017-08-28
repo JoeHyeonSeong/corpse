@@ -6,11 +6,16 @@ using UnityEngine.EventSystems;
 public class MoveButton :MonoBehaviour,  IPointerUpHandler, IPointerDownHandler
 {
     Vector2 pressStartPos;
-    const float dragThreshold = 100f;
+    const float dragThreshold = 10f;
 
     public void OnPointerUp(PointerEventData data)
     {
-        
+        if (Scheduler.instance.CurrentCycle != Scheduler.GameCycle.InputTime)
+        {
+            //deny input
+            return;
+        }
+
         Vector2 resultVec = data.position - pressStartPos;
         if (resultVec.magnitude > dragThreshold)
         {

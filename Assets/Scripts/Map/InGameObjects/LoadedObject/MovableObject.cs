@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class MovableObject : LoadedObject
 {
-
+    /// <summary>
+    /// move speed
+    /// </summary>
+    protected const int moveSpd = 10;
     /// <summary>
     /// if move is not end-> true
     /// </summary>
@@ -47,6 +50,7 @@ public class MovableObject : LoadedObject
         if (MapManager.instance.CanGo(destination))
         {
             //can go to destination
+            Scheduler.instance.MoveReport(this);
             //leave
             List<InGameObject> originDesBlockData = MapManager.instance.BlockData(currentPos);
             foreach (InGameObject obj in originDesBlockData)
@@ -60,26 +64,22 @@ public class MovableObject : LoadedObject
             //change current position
             currentPos = destination;
             moveDir = tempDir;
-            //temp
             transform.position = currentPos.ToVector3();
-            //step
-            foreach (InGameObject obj in desBlockData)
-            {
-                if (obj.GetType().IsSubclassOf(typeof(Floor)) || obj.GetType() == typeof(Floor))
-                {
-                    ((Floor)obj).Step(this);
-                }
-            }
-            //touch
-            foreach (InGameObject obj in desBlockData)
-            {
-                if (obj.GetType().IsSubclassOf(typeof(Laser)) || obj.GetType() == typeof(Laser))
-                {
-                    ((Laser)obj).Touch(this);
-                }
-            }
+            StartCoroutine(MoveCoroutine());
         }
 
+    }
+
+    IEnumerator MoveCoroutine()
+    {
+        Transform mySprite = transform.Find("Sprite");
+        mySprite.localPosition = -moveDir.ToVector3();
+       for (int i=0;i<moveSpd;i++)
+        {
+           mySprite.localPosition += 1f / moveSpd * moveDir.ToVector3();
+            yield return new WaitForEndOfFrame();
+        }
+        MoveEnd();
     }
 
     public override void Teleport(Position des)
@@ -98,6 +98,23 @@ public class MovableObject : LoadedObject
 
     private void MoveEnd()
     {
-
+        List<InGameObject> currentBlockData = MapManager.instance.BlockData(currentPos);
+        //step
+        foreach (InGameObject obj in currentBlockData)
+        {
+            if (obj.GetType().IsSubclassOf(typeof(Floor)) || obj.GetType() == typeof(Floor))
+            {
+                ((Floor)obj).Step(this);
+            }
+        }
+        //touch
+        foreach (InGameObject obj in currentBlockData)
+        {
+            if (obj.GetType().IsSubclassOf(typeof(Laser)) || obj.GetType() == typeof(Laser))
+            {
+                ((Laser)obj).Touch(this);
+            }
+        }
+        Scheduler.instance.StopReport(this);
     }
 }
