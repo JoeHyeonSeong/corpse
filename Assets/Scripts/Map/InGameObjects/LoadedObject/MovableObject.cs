@@ -25,7 +25,7 @@ public class MovableObject : LoadedObject
         Position des = currentPos + dir;
         if (MapManager.instance.CanGo(des))
         {
-            Move(des);
+            Move(des,false);
         }
     }
 
@@ -34,7 +34,7 @@ public class MovableObject : LoadedObject
     /// </summary>
     /// <param name="destination"></param>
     /// <param name="teleport"></param>
-    public void Move(Position destination)
+    public void Move(Position destination,bool rollback)
     {
         Position tempDir = destination - currentPos;
         List<InGameObject> desBlockData = MapManager.instance.BlockData(destination);
@@ -50,7 +50,10 @@ public class MovableObject : LoadedObject
         if (MapManager.instance.CanGo(destination))
         {
             //can go to destination
-            Scheduler.instance.MoveReport(this);
+            if (!rollback)
+            {
+                InGameManager.instance.MoveSign(this);
+            }
             //leave
             List<InGameObject> originDesBlockData = MapManager.instance.BlockData(currentPos);
             foreach (InGameObject obj in originDesBlockData)
@@ -65,11 +68,22 @@ public class MovableObject : LoadedObject
             currentPos = destination;
             moveDir = tempDir;
             transform.position = currentPos.ToVector3();
-            StartCoroutine(MoveCoroutine());
+            if (!rollback)
+            {
+                StartCoroutine(MoveCoroutine());
+            }
+            else
+            {
+                MoveEnd();
+            }
         }
 
     }
 
+    /// <summary>
+    /// change 'sprite' position
+    /// </summary>
+    /// <returns></returns>
     IEnumerator MoveCoroutine()
     {
         Transform mySprite = transform.Find("Sprite");
@@ -115,6 +129,6 @@ public class MovableObject : LoadedObject
                 ((Laser)obj).Touch(this);
             }
         }
-        Scheduler.instance.StopReport(this);
+        InGameManager.instance.StopSign(this);
     }
 }

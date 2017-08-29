@@ -39,6 +39,7 @@ public class Scheduler : MonoBehaviour {
         //end of move time
         if (movingObject.Count == 0)
         {
+            InGameManager.instance.NewPhase();
             currentCycle = GameCycle.InputTime;
         }
     }

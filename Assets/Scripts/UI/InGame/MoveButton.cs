@@ -19,29 +19,30 @@ public class MoveButton :MonoBehaviour,  IPointerUpHandler, IPointerDownHandler
         Vector2 resultVec = data.position - pressStartPos;
         if (resultVec.magnitude > dragThreshold)
         {
+            Position additionalPos;
             if (Mathf.Abs(resultVec.x) > Mathf.Abs(resultVec.y))
             {
                 if (resultVec.x > 0)
                 {
-                    Character.instance.Move(Character.instance.CurrentPos+Direction.Dir4ToPos(Dir4.Right));
+                    additionalPos = Direction.Dir4ToPos(Dir4.Right);
                 }
                 else
                 {
-                    Character.instance.Move(Character.instance.CurrentPos + Direction.Dir4ToPos(Dir4.Left));
+                    additionalPos = Direction.Dir4ToPos(Dir4.Left);
                 }
             }
             else
             {
                 if (resultVec.y > 0)
                 {
-                    Character.instance.Move(Character.instance.CurrentPos + Direction.Dir4ToPos(Dir4.Up));
+                    additionalPos = Direction.Dir4ToPos(Dir4.Up);
                 }
                 else
                 {
-                    Character.instance.Move(Character.instance.CurrentPos + Direction.Dir4ToPos(Dir4.Down));
+                    additionalPos = Direction.Dir4ToPos(Dir4.Down);
                 }
             }
-            
+            Character.instance.Move(Character.instance.CurrentPos + additionalPos, false);
         }
     }
 

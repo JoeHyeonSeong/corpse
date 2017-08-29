@@ -27,21 +27,15 @@ public abstract class InGameObject : MonoBehaviour {
     { get { return currentStatus; } }
     protected virtual void Awake()
     {
+        HistoryManager.instance.SaveMove(this, new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)), true);
 
-        Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
-        transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y*10;
     }
 
     protected virtual void Start()
     {
-        if (currentStatus == ActiveStatus.activating)
-        {
-            Activate();
-        }
-        else if (currentStatus == ActiveStatus.deactivating)
-        {
-            Deactivate();
-        }
+        Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
+        ActivateCheck();
     }
 
     /// <summary>
@@ -68,5 +62,17 @@ public abstract class InGameObject : MonoBehaviour {
     {
         currentPos = des;
         transform.position = currentPos.ToVector3();
+    }
+
+    public void ActivateCheck()
+    {
+        if (currentStatus == ActiveStatus.activating)
+        {
+            Activate();
+        }
+        else if (currentStatus == ActiveStatus.deactivating)
+        {
+            Deactivate();
+        }
     }
 }

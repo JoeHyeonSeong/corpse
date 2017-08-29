@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LaserWall : Wall{
+public class LaserWall : Wall
+{
     protected Laser myLaser;
     [SerializeField]
     protected Dir4 dir;
@@ -11,20 +12,18 @@ public class LaserWall : Wall{
         get { return dir; }
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+        myLaser = Instantiate<Laser>(Resources.Load<Laser>("Prefab/InGameObject/Laser")
+           , transform.position, Quaternion.identity, this.transform.parent);
+        myLaser.Dir = this.dir;
+    }
 
     public override void Activate()
     {
         base.Activate();
-        if (myLaser == null)
-        {
-            myLaser = Instantiate<Laser>(Resources.Load<Laser>("Prefab/InGameObject/Laser")
-            , transform.position, Quaternion.identity, this.transform.parent);
-            myLaser.Dir = this.dir;
-        }
-        else
-        {
-            myLaser.gameObject.SetActive(true);
-        }
+        myLaser.gameObject.SetActive(true);
         myLaser.Resize();
     }
 
@@ -35,6 +34,6 @@ public class LaserWall : Wall{
         {
 
             myLaser.gameObject.SetActive(false);
-       }
+        }
     }
 }

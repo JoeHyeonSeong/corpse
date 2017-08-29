@@ -8,7 +8,10 @@ public class Laser : InGameObject
     public Dir4 Dir { get { return dir; } set { dir = value; } } 
     protected const int maxLength = 20;
 
-
+    protected override void Start()
+    {
+        base.Start();
+    }
     public void Touch(LoadedObject who)
     {
         if (who.GetType().IsSubclassOf(typeof(DestroyableObject)))
@@ -27,6 +30,10 @@ public class Laser : InGameObject
     public void Resize()
     {
         Position tempEndPos=null;
+        if (currentPos == null)
+        {
+            Start();
+        }
         RaycastHit2D[] hits = Physics2D.RaycastAll(currentPos.ToVector3(), Direction.Dir4ToPos(dir).ToVector3(), maxLength, 1 << LayerMask.NameToLayer("InGameObject"));
         for (int i = 0; i < hits.Length; i++)
         {
@@ -42,7 +49,7 @@ public class Laser : InGameObject
         {
             tempEndPos = currentPos + Direction.Dir4ToPos(dir) * maxLength;
         }
-        GetComponent<SpriteRenderer>().sortingOrder = (tempEndPos.Y<currentPos.Y)?-tempEndPos.Y*10-1:-currentPos.Y*10-1;
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = (tempEndPos.Y<currentPos.Y)?-tempEndPos.Y*10-1:-currentPos.Y*10-1;
 
         Position laserPos = tempEndPos - currentPos;
         int length;
@@ -56,7 +63,7 @@ public class Laser : InGameObject
         }
         GetComponent<BoxCollider2D>().size = new Vector2(1,Mathf.Abs(length));
         GetComponent<BoxCollider2D>().offset = new Vector2(0,Mathf.Abs(length/2f));
-        GetComponent<SpriteRenderer>().size = new Vector2(1, Mathf.Abs(length));
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().size = new Vector2(1, Mathf.Abs(length));
         //rotate
         switch (dir)
         {
