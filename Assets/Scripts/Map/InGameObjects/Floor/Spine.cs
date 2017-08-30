@@ -3,29 +3,46 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Spine : Floor {
-
+    static Sprite spineOn;
+    static Sprite spineOff;
     protected override void Awake()
     {
         base.Awake();
+        if (spineOn == null)
+        {
+            spineOn = Resources.Load<Sprite>("Graphic/InGameObject/spineOn");
+            spineOff = Resources.Load<Sprite>("Graphic/InGameObject/spineOff");
+        }
     }
 
 
     public override void Step(MovableObject who)
     {
-        if(currentStatus>0)
+        if (currentStatus == ActiveStatus.activating)
         {
-            if(who.GetType()==typeof(DestroyableObject))
-            ((DestroyableObject)who).Destroy();
+            if (who.GetType().IsSubclassOf(typeof(DestroyableObject)))
+                ((DestroyableObject)who).Destroy();
         }
     }
 
-   public override void Activate()
+    public override void Activate()
     {
-
+        base.Activate();
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().sprite = spineOn;
+        if (currentPos == null)
+        {
+            Teleport(new Position((int)transform.position.x, (int)transform.position.y));
+        }
+        DestroyableObject desObj = (DestroyableObject)MapManager.instance.Find(typeof(DestroyableObject), currentPos);
+        if (desObj != null)
+        {
+            desObj.Destroy();
+        }
     }
 
     public override void Deactivate()
     {
-
+        base.Deactivate();
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().sprite = spineOff;
     }
 }

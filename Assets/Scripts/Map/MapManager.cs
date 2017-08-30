@@ -89,25 +89,6 @@ public class MapManager : MonoBehaviour {
     /// <param name="pos"></param>
     public void ResizeSideLasers(Position pos)
     {
-        /*
-        List<InGameObject>[] sideBlockDatas =
-            {
-            BlockData(pos+Direction.Dir4ToPos(Dir4.Down)),
-            BlockData(pos+Direction.Dir4ToPos(Dir4.Up)),
-            BlockData(pos+Direction.Dir4ToPos(Dir4.Right)),
-            BlockData(pos+Direction.Dir4ToPos(Dir4.Left))
-        };
-        for (int i = 0; i < 4; i++)
-        {
-            foreach (InGameObject obj in sideBlockDatas[i])
-            {
-                if (obj.GetType() == typeof(Laser))
-                {
-                    ((Laser)obj).Resize();
-                }
-            }
-        }
-        */
         List<InGameObject> checkBlockData = BlockData(pos);
         foreach (InGameObject obj in checkBlockData)
         {
@@ -116,5 +97,24 @@ public class MapManager : MonoBehaviour {
                 ((Laser)obj).Resize();
             }
         }
+    }
+
+    /// <summary>
+    ///type이 t이거나 t의 subclass인것중 가장 먼저 발견한 것을 반환한다.
+    /// </summary>
+    /// <param name="t"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public InGameObject Find(System.Type t, Position pos)
+    {
+        List<InGameObject> checkBlock = BlockData(pos);
+        foreach (InGameObject obj in checkBlock)
+        {
+            if (obj.GetType() == t || obj.GetType().IsSubclassOf(t))
+            {
+                return obj;
+            }
+        }
+        return null;
     }
 }

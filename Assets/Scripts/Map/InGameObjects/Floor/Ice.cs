@@ -12,7 +12,6 @@ public class Ice : Floor
 
     public override void Step(MovableObject who)
     {
-        who.Move(who.CurrentPos + who.MoveDir,false);
-
+        who.Slide(who.CurrentPos + who.MoveDir,false);
     }
 }

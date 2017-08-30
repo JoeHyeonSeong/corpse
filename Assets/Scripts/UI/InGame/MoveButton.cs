@@ -42,7 +42,23 @@ public class MoveButton :MonoBehaviour,  IPointerUpHandler, IPointerDownHandler
                     additionalPos = Direction.Dir4ToPos(Dir4.Down);
                 }
             }
-            Character.instance.Move(Character.instance.CurrentPos + additionalPos, false);
+            List<InGameObject> characterBlockData = MapManager.instance.BlockData(Character.instance.CurrentPos);
+            bool ice = false;
+            foreach (InGameObject obj in characterBlockData)
+            {
+                if (obj.GetType() == typeof(Ice))
+                {
+                    ice = true;
+                }
+            }
+            if (ice)
+            {
+                Character.instance.Slide(Character.instance.CurrentPos + additionalPos, true);
+            }
+            else
+            {
+                Character.instance.Move(Character.instance.CurrentPos + additionalPos, true, true);
+            }
         }
     }
 

@@ -43,6 +43,7 @@ public class Laser : InGameObject
             if (temp.GetType().IsSubclassOf(typeof(LoadedObject))
                 &&temp.GetType()!=typeof(LaserWall))
             {
+                Debug.Log(temp.gameObject.name);
                 tempEndPos = temp.CurrentPos;
                 break;
             }

@@ -20,8 +20,12 @@ public class WallMakeFloor : Floor {
     public override void Deactivate()
     {
         base.Deactivate();
-        myWall.gameObject.SetActive(false) ;
+        if (myWall != null)
+        {
+            myWall.gameObject.SetActive(false);
             MapManager.instance.ResizeSideLasers(currentPos);
+        }
+
     }
 
 

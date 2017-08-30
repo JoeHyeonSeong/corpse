@@ -25,23 +25,17 @@ public class HistoryManager : MonoBehaviour
 
     public static HistoryManager instance;
 
-    private int savingPhase;
     Stack<MoveHistory[]> moveStack;
     List<MoveHistory> currentHistory = new List<MoveHistory>();
 
     private void Awake()
     {
-        Debug.Log("dd");
         instance = this;
         moveStack = new Stack<MoveHistory[]>();
     }
 
     public void SaveMove(InGameObject obj, Position pos, bool generated)
     {
-        if (savingPhase != InGameManager.instance.Phase)
-        {
-            savingPhase = InGameManager.instance.Phase;
-        }
         currentHistory.Add(new MoveHistory(obj, pos, generated));
     }
 
@@ -70,8 +64,6 @@ public class HistoryManager : MonoBehaviour
             rollbackData = moveStack.Pop();
         }
         while (rollbackData.Length == 0);
-        savingPhase--;
-        InGameManager.instance.Phase = savingPhase;
         for (int i = 0; i < rollbackData.Length; i++)
         {
             MoveHistory his = rollbackData[rollbackData.Length - 1 - i];
@@ -86,7 +78,7 @@ public class HistoryManager : MonoBehaviour
                 if (his.Obj.GetType().IsSubclassOf(typeof(MovableObject)))
                 {
 
-                    ((MovableObject)his.Obj).Move(his.Pos, true);
+                    ((MovableObject)his.Obj).Move(his.Pos,false,false);
                 }
             }
         }

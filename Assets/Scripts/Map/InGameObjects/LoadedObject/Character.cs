@@ -18,8 +18,19 @@ public class Character : DestroyableObject
     public override void Destroy()
     {
         //시체 남김
-        Instantiate(Resources.Load("Prefab/InGameObject/Corpse"), currentPos.ToVector3(), Quaternion.identity, transform.parent);
+        GameObject mycorpse =
+       (GameObject) Instantiate(Resources.Load("Prefab/InGameObject/Corpse"),
+        currentPos.ToVector3(), Quaternion.identity, transform.parent);
         //gen point 에서 다시 살아남
+        Position lastPos = currentPos;
+        Ice underIce = (Ice)MapManager.instance.Find(typeof(Ice), currentPos);
         Teleport(GenPoint.ActivatingGenPoint.CurrentPos);
+        if (isMoving && underIce != null)
+        {
+            StopCoroutine(MoveCoroutine());
+            mycorpse.GetComponent<Corpse>().Slide(lastPos + moveDir,true);
+        }
+
+        
     }
 }

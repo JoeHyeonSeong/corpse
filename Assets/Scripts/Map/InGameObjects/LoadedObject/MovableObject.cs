@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class MovableObject : LoadedObject
 {
+
     /// <summary>
     /// move speed
     /// </summary>
@@ -12,7 +13,7 @@ public class MovableObject : LoadedObject
     /// <summary>
     /// if move is not end-> true
     /// </summary>
-    private bool isMoving;
+    protected bool isMoving;
 
     protected Position moveDir;
     /// <summary>
@@ -25,37 +26,59 @@ public class MovableObject : LoadedObject
         Position des = currentPos + dir;
         if (MapManager.instance.CanGo(des))
         {
-            Move(des,false);
+            List<InGameObject> currentBlockData=MapManager.instance.BlockData(des);
+            bool iceCheck = false;
+            foreach (InGameObject obj in currentBlockData)
+            {
+                if (obj.GetType() == typeof(Ice))
+                {
+                    iceCheck = true;
+                }
+            }
+            if (iceCheck)
+            {
+                Slide(des, true);
+            }
+            else
+            {
+                Move(des, true, true);
+            }
         }
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+        moveDir = new Position(0, 0);
+    }
     /// <summary>
     /// move to destination if not walk to teleport is true
     /// </summary>
     /// <param name="destination"></param>
     /// <param name="teleport"></param>
-    public void Move(Position destination,bool rollback)
+    public void Move(Position destination, bool saveHistory, bool anim)
     {
-
         Position tempDir = destination - currentPos;
         PushCheck(destination);
 
         if (MapManager.instance.CanGo(destination))
         {
             //can go to destination
-            if (!rollback)
+            if (saveHistory)
             {
                 InGameManager.instance.MoveSign(this);
             }
             //leave
             LeaveCheck();
-
             //change current position
+            Position lastPos = currentPos;
             currentPos = destination;
             moveDir = tempDir;
             transform.position = currentPos.ToVector3();
+            //resize laser
+            MapManager.instance.ResizeSideLasers(lastPos);
             transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
-            if (!rollback)
+            if (anim)
             {
                 StartCoroutine(MoveCoroutine());
             }
@@ -71,13 +94,14 @@ public class MovableObject : LoadedObject
     /// change 'sprite' position
     /// </summary>
     /// <returns></returns>
-    IEnumerator MoveCoroutine()
+    protected IEnumerator MoveCoroutine()
     {
         Transform mySprite = transform.Find("Sprite");
         mySprite.localPosition = -moveDir.ToVector3();
-       for (int i=0;i<moveSpd;i++)
+        for (int i = 0; i < moveSpd; i++)
         {
-           mySprite.localPosition += 1f / moveSpd * moveDir.ToVector3();
+            isMoving = true;
+            mySprite.localPosition += 1f / moveSpd * moveDir.ToVector3();
             yield return new WaitForEndOfFrame();
         }
         MoveEnd();
@@ -95,6 +119,7 @@ public class MovableObject : LoadedObject
         StepCheck();
         //touch
         TouchCheck();
+        isMoving = false;
         InGameManager.instance.StopSign(this);
     }
 
@@ -125,17 +150,36 @@ public class MovableObject : LoadedObject
     }
 
 
-
-    protected void PushCheck(Position des)
+    /// <summary>
+    /// push and return whether push at least one
+    /// </summary>
+    /// <param name="at"></param>
+    /// <returns></returns>
+    protected bool PushCheck(Position at)
     {
-        Position tempDir = des - currentPos;
-        List<InGameObject> desBlockData = MapManager.instance.BlockData(des);
+        Position tempDir = at - currentPos;
+        List<InGameObject> desBlockData = MapManager.instance.BlockData(at);
+        bool push = false;
         //push
         foreach (InGameObject obj in desBlockData)
         {
             if (obj.GetType().IsSubclassOf(typeof(LoadedObject)))
             {
                 ((LoadedObject)obj).Push(this, tempDir);
+                push = true;
+            }
+        }
+        return push;
+    }
+
+    public void Slide(Position destination,bool haveToMove)
+    {
+        if (isMoving||haveToMove)
+        {
+            bool pushResult = PushCheck(destination);
+            if (pushResult == false)
+            {
+                Move(destination, true, true);
             }
         }
     }
