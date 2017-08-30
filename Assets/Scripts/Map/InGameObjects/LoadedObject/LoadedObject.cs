@@ -14,11 +14,15 @@ public abstract class LoadedObject : InGameObject {
     public override void Teleport(Position des)
     {
         base.Teleport(des);
-        List<InGameObject> currentBlock = MapManager.instance.BlockData(des);
-        foreach (InGameObject obj in currentBlock)
+        TouchCheck();
+    }
+
+    protected void TouchCheck()
+    {
+        List<InGameObject> currentBlockData = MapManager.instance.BlockData(currentPos);
+        foreach (InGameObject obj in currentBlockData)
         {
-            //touch
-            if (obj.GetType() == typeof(Laser) || obj.GetType().IsSubclassOf(typeof(Laser)))
+            if (obj.GetType().IsSubclassOf(typeof(Laser)) || obj.GetType() == typeof(Laser))
             {
                 ((Laser)obj).Touch(this);
             }

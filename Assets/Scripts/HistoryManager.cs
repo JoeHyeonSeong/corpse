@@ -31,6 +31,7 @@ public class HistoryManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("dd");
         instance = this;
         moveStack = new Stack<MoveHistory[]>();
     }
@@ -50,15 +51,12 @@ public class HistoryManager : MonoBehaviour
     /// </summary>
     public void CommitHistory()
     {
-        Debug.Log("commit");
         moveStack.Push(currentHistory.ToArray());
         currentHistory = new List<MoveHistory>();
     }
 
     public void RollBack()
     {
-        Debug.Log("roll back");
-        savingPhase--;
         //stack must have data
 
 
@@ -72,19 +70,24 @@ public class HistoryManager : MonoBehaviour
             rollbackData = moveStack.Pop();
         }
         while (rollbackData.Length == 0);
-
-
-
-        foreach (MoveHistory his in rollbackData)
+        savingPhase--;
+        InGameManager.instance.Phase = savingPhase;
+        for (int i = 0; i < rollbackData.Length; i++)
         {
+            MoveHistory his = rollbackData[rollbackData.Length - 1 - i];
             if (his.Generated && his.Obj != null)
             {
+                Position lastPos = his.Obj.CurrentPos;
                 Destroy(his.Obj.gameObject);
+                MapManager.instance.ResizeSideLasers(lastPos);
             }
             else
             {
-                Debug.Log(his.Obj.ToString() + his.Pos);
-                ((MovableObject)his.Obj).Move(his.Pos,true);
+                if (his.Obj.GetType().IsSubclassOf(typeof(MovableObject)))
+                {
+
+                    ((MovableObject)his.Obj).Move(his.Pos, true);
+                }
             }
         }
     }

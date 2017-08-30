@@ -5,7 +5,7 @@ using UnityEngine;
 public class InGameManager : MonoBehaviour {
     public static InGameManager instance;
     private int phase=0;
-    public int Phase { get { return phase; }}
+    public int Phase { get { return phase; }set { phase = value; } }
     void Awake()
     {
         instance = this;
@@ -24,8 +24,8 @@ public class InGameManager : MonoBehaviour {
 
     public void NewPhase()
     {
-        Debug.Log("new phase");
         phase++;
+        Debug.Log("phase:" + phase);
         HistoryManager.instance.CommitHistory();
     }
 
@@ -33,7 +33,6 @@ public class InGameManager : MonoBehaviour {
     {
         if (Scheduler.instance.CurrentCycle == Scheduler.GameCycle.InputTime)
         {
-            phase--;
             HistoryManager.instance.RollBack();
         }
         

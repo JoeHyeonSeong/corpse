@@ -36,16 +36,9 @@ public class MovableObject : LoadedObject
     /// <param name="teleport"></param>
     public void Move(Position destination,bool rollback)
     {
+
         Position tempDir = destination - currentPos;
-        List<InGameObject> desBlockData = MapManager.instance.BlockData(destination);
-        //push
-        foreach (InGameObject obj in desBlockData)
-        {
-            if (obj.GetType().IsSubclassOf(typeof(LoadedObject)))
-            {
-                ((LoadedObject)obj).Push(this, tempDir);
-            }
-        }
+        PushCheck(destination);
 
         if (MapManager.instance.CanGo(destination))
         {
@@ -55,19 +48,13 @@ public class MovableObject : LoadedObject
                 InGameManager.instance.MoveSign(this);
             }
             //leave
-            List<InGameObject> originDesBlockData = MapManager.instance.BlockData(currentPos);
-            foreach (InGameObject obj in originDesBlockData)
-            {
-                if (obj.GetType().IsSubclassOf(typeof(Floor)) || obj.GetType() == typeof(Floor))
-                {
-                    ((Floor)obj).Leave(this);
-                }
-            }
+            LeaveCheck();
 
             //change current position
             currentPos = destination;
             moveDir = tempDir;
             transform.position = currentPos.ToVector3();
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
             if (!rollback)
             {
                 StartCoroutine(MoveCoroutine());
@@ -100,17 +87,18 @@ public class MovableObject : LoadedObject
     {
         base.Teleport(des);
         List<InGameObject> currentBlock = MapManager.instance.BlockData(des);
-        foreach (InGameObject obj in currentBlock)
-        {
-            //step
-            if (obj.GetType() == typeof(Floor) || obj.GetType().IsSubclassOf(typeof(Floor)))
-            {
-                ((Floor)obj).Step(this);
-            }
-        }
+        StepCheck();
     }
 
     private void MoveEnd()
+    {
+        StepCheck();
+        //touch
+        TouchCheck();
+        InGameManager.instance.StopSign(this);
+    }
+
+    protected void StepCheck()
     {
         List<InGameObject> currentBlockData = MapManager.instance.BlockData(currentPos);
         //step
@@ -121,14 +109,34 @@ public class MovableObject : LoadedObject
                 ((Floor)obj).Step(this);
             }
         }
-        //touch
-        foreach (InGameObject obj in currentBlockData)
+    }
+
+    protected void LeaveCheck()
+    {
+        //leave
+        List<InGameObject> originDesBlockData = MapManager.instance.BlockData(currentPos);
+        foreach (InGameObject obj in originDesBlockData)
         {
-            if (obj.GetType().IsSubclassOf(typeof(Laser)) || obj.GetType() == typeof(Laser))
+            if (obj.GetType().IsSubclassOf(typeof(Floor)) || obj.GetType() == typeof(Floor))
             {
-                ((Laser)obj).Touch(this);
+                ((Floor)obj).Leave(this);
             }
         }
-        InGameManager.instance.StopSign(this);
+    }
+
+
+
+    protected void PushCheck(Position des)
+    {
+        Position tempDir = des - currentPos;
+        List<InGameObject> desBlockData = MapManager.instance.BlockData(des);
+        //push
+        foreach (InGameObject obj in desBlockData)
+        {
+            if (obj.GetType().IsSubclassOf(typeof(LoadedObject)))
+            {
+                ((LoadedObject)obj).Push(this, tempDir);
+            }
+        }
     }
 }

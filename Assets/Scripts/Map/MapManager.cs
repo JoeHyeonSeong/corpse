@@ -14,10 +14,13 @@ public class MapManager : MonoBehaviour {
         {
             instance = this;
         }
-        GenerateMap();
+
     }
 
-
+    private void Start()
+    {
+        GenerateMap();
+    }
     /// <summary>
     /// generate new map using prefab
     /// </summary>
@@ -86,6 +89,7 @@ public class MapManager : MonoBehaviour {
     /// <param name="pos"></param>
     public void ResizeSideLasers(Position pos)
     {
+        /*
         List<InGameObject>[] sideBlockDatas =
             {
             BlockData(pos+Direction.Dir4ToPos(Dir4.Down)),
@@ -101,6 +105,15 @@ public class MapManager : MonoBehaviour {
                 {
                     ((Laser)obj).Resize();
                 }
+            }
+        }
+        */
+        List<InGameObject> checkBlockData = BlockData(pos);
+        foreach (InGameObject obj in checkBlockData)
+        {
+            if (obj.GetType() == typeof(Laser))
+            {
+                ((Laser)obj).Resize();
             }
         }
     }

@@ -11,6 +11,8 @@ public class Laser : InGameObject
     protected override void Start()
     {
         base.Start();
+        GetComponent<BoxCollider2D>().size = new Vector2(1, Mathf.Abs(maxLength));
+        GetComponent<BoxCollider2D>().offset = new Vector2(0, Mathf.Abs(maxLength / 2f));
     }
     public void Touch(LoadedObject who)
     {
@@ -61,8 +63,6 @@ public class Laser : InGameObject
         {
             length = laserPos.Y;
         }
-        GetComponent<BoxCollider2D>().size = new Vector2(1,Mathf.Abs(length));
-        GetComponent<BoxCollider2D>().offset = new Vector2(0,Mathf.Abs(length/2f));
         transform.Find("Sprite").GetComponent<SpriteRenderer>().size = new Vector2(1, Mathf.Abs(length));
         //rotate
         switch (dir)

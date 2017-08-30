@@ -17,7 +17,10 @@ public class GenPoint :Floor {
     {
         if (activatingGenPoint != this)
         {
-            activatingGenPoint.Deactivate();
+            if (activatingGenPoint != null)
+            {
+                activatingGenPoint.Deactivate();
+            }
             Activate();
         }
     }

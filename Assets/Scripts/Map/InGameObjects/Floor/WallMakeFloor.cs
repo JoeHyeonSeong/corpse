@@ -7,18 +7,21 @@ public class WallMakeFloor : Floor {
     public override void Activate()
     {
         base.Activate();
-            CreateWall();
+
+        CreateWall();
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+        myWall = Instantiate(Resources.Load<MakedWall>("Prefab/InGameObject/MakedWall"),
+        transform.position, Quaternion.identity, transform.parent);
+    }
     public override void Deactivate()
     {
         base.Deactivate();
-        if (myWall != null)
-        {
-            Destroy(myWall.gameObject);
-            myWall = null;
+        myWall.gameObject.SetActive(false) ;
             MapManager.instance.ResizeSideLasers(currentPos);
-        }
     }
 
 
@@ -51,8 +54,7 @@ public class WallMakeFloor : Floor {
         if (somethingIsOnMe == false)
         {
 
-           myWall= Instantiate(Resources.Load<MakedWall>("Prefab/InGameObject/MakedWall"),
-                currentPos.ToVector3(), Quaternion.identity, transform.parent);
+            myWall.gameObject.SetActive(true);
         }
     }
 }

@@ -28,13 +28,15 @@ public abstract class InGameObject : MonoBehaviour {
     protected virtual void Awake()
     {
         HistoryManager.instance.SaveMove(this, new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)), true);
-
     }
 
-    protected virtual void Start()
+    protected virtual void OnEnable()
     {
         Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
-        transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
+    }
+    protected virtual void Start()
+    {
+        
         ActivateCheck();
     }
 
@@ -62,6 +64,7 @@ public abstract class InGameObject : MonoBehaviour {
     {
         currentPos = des;
         transform.position = currentPos.ToVector3();
+        SetSortingOrder();
     }
 
     public void ActivateCheck()
@@ -74,5 +77,10 @@ public abstract class InGameObject : MonoBehaviour {
         {
             Deactivate();
         }
+    }
+
+    protected void SetSortingOrder()
+    {
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
     }
 }
