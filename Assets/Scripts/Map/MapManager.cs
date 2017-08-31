@@ -17,6 +17,8 @@ public class MapManager : MonoBehaviour {
 
     }
 
+    public GameObject makingMapPref;
+
     private void Start()
     {
         GenerateMap();
@@ -27,7 +29,8 @@ public class MapManager : MonoBehaviour {
     private void GenerateMap()
     {
         HandOverData.Stagenum = 1;
-       currentMapPrefs=Resources.Load<GameObject>("Prefab/Map/Stage"+HandOverData.Stagenum.ToString());
+        // currentMapPrefs=Resources.Load<GameObject>("Prefab/Map/Stage"+HandOverData.Stagenum.ToString());
+        currentMapPrefs = makingMapPref;
         Instantiate(currentMapPrefs);
     }
 
