@@ -27,7 +27,7 @@ public class Character : DestroyableObject
         Teleport(GenPoint.ActivatingGenPoint.CurrentPos);
         if (isMoving && underIce != null)
         {
-            StopCoroutine(MoveCoroutine());
+            StopCoroutine(MoveCoroutine(true));
             mycorpse.GetComponent<Corpse>().Slide(lastPos + moveDir,true);
         }
 

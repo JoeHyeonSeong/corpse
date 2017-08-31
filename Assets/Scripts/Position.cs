@@ -70,4 +70,5 @@
         return new UnityEngine.Vector3(x, y);
     }
 
+    public int magnitude { get { return (int)UnityEngine.Mathf.Sqrt(x *x + y *y); } }
 }

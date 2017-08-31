@@ -21,6 +21,14 @@ public class MovableObject : LoadedObject
     /// </summary>
     public Position MoveDir { get { return moveDir; } }
 
+    /// <summary>
+    /// last position before move
+    /// </summary>
+    /// <param name="who"></param>
+    /// <param name="dir"></param>
+    protected Position lastPos;
+
+
     public override void Push(MovableObject who, Position dir)
     {
         Position des = currentPos + dir;
@@ -66,12 +74,12 @@ public class MovableObject : LoadedObject
             //can go to destination
             if (saveHistory)
             {
-                InGameManager.instance.MoveSign(this);
+                Scheduler.instance.MoveReport(this);
             }
             //leave
             LeaveCheck();
             //change current position
-            Position lastPos = currentPos;
+            lastPos = currentPos;
             currentPos = destination;
             moveDir = tempDir;
             transform.position = currentPos.ToVector3();
@@ -80,11 +88,11 @@ public class MovableObject : LoadedObject
             transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
             if (anim)
             {
-                StartCoroutine(MoveCoroutine());
+                StartCoroutine(MoveCoroutine(saveHistory));
             }
             else
             {
-                MoveEnd();
+                MoveEnd(saveHistory);
             }
         }
 
@@ -94,7 +102,7 @@ public class MovableObject : LoadedObject
     /// change 'sprite' position
     /// </summary>
     /// <returns></returns>
-    protected IEnumerator MoveCoroutine()
+    protected IEnumerator MoveCoroutine(bool saveHistory)
     {
         Transform mySprite = transform.Find("Sprite");
         mySprite.localPosition = -moveDir.ToVector3();
@@ -104,7 +112,7 @@ public class MovableObject : LoadedObject
             mySprite.localPosition += 1f / moveSpd * moveDir.ToVector3();
             yield return new WaitForEndOfFrame();
         }
-        MoveEnd();
+        MoveEnd(saveHistory);
     }
 
     public override void Teleport(Position des)
@@ -114,12 +122,17 @@ public class MovableObject : LoadedObject
         StepCheck();
     }
 
-    private void MoveEnd()
+    private void MoveEnd(bool saveHistory)
     {
         StepCheck();
         //touch
         TouchCheck();
         isMoving = false;
+        if (saveHistory)
+        {
+            HistoryManager.instance.SaveMove(this,lastPos, false);
+        }
+        
         InGameManager.instance.StopSign(this);
     }
 

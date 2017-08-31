@@ -8,15 +8,27 @@ public class Laser : InGameObject
     public Dir4 Dir { get { return dir; } set { dir = value; } } 
     protected const int maxLength = 20;
 
+    /// <summary>
+    /// lasers end position
+    /// </summary>
+    protected Position endPos;
+
+
     protected override void Start()
     {
         base.Start();
         GetComponent<BoxCollider2D>().size = new Vector2(1, Mathf.Abs(maxLength));
         GetComponent<BoxCollider2D>().offset = new Vector2(0, Mathf.Abs(maxLength / 2f));
+        
     }
     public void Touch(LoadedObject who)
     {
-        if (who.GetType().IsSubclassOf(typeof(DestroyableObject)))
+        if (endPos == null)
+        {
+            endPos = currentPos + Direction.Dir4ToPos(dir) * maxLength;
+        }
+        if (who.GetType().IsSubclassOf(typeof(DestroyableObject))
+            &&(who.CurrentPos-currentPos).magnitude <= (endPos - currentPos).magnitude)
         {
             ((DestroyableObject)who).Destroy();
         }
@@ -43,7 +55,6 @@ public class Laser : InGameObject
             if (temp.GetType().IsSubclassOf(typeof(LoadedObject))
                 &&temp.GetType()!=typeof(LaserWall))
             {
-                Debug.Log(temp.gameObject.name);
                 tempEndPos = temp.CurrentPos;
                 break;
             }
@@ -54,6 +65,7 @@ public class Laser : InGameObject
         }
         transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = (tempEndPos.Y<currentPos.Y)?-tempEndPos.Y*10-1:-currentPos.Y*10-1;
 
+        endPos = tempEndPos;
         Position laserPos = tempEndPos - currentPos;
         int length;
         if (Mathf.Abs(laserPos.X) > Mathf.Abs(laserPos.Y))
