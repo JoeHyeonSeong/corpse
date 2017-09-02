@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DisposableButton : Button {
+    Stack<bool> neverUseStack = new Stack<bool>();
     bool neverUsed = true;
     public override void Step(MovableObject who)
     {
@@ -18,5 +19,21 @@ public class DisposableButton : Button {
     /// <param name="who"></param>
     public override void Leave(MovableObject who)
     {
+    }
+
+    public override void SaveHistory()
+    {
+        base.SaveHistory();
+        neverUseStack.Push(neverUsed);
+    }
+
+    public override void RollBack()
+    {
+        base.RollBack();
+        if (neverUseStack.Count > 0)
+        {
+            neverUseStack.Pop();
+            neverUsed = neverUseStack.Pop();
+        }
     }
 }

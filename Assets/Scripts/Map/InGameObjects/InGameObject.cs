@@ -10,6 +10,8 @@ public abstract class InGameObject : MonoBehaviour {
         deactivating,
         non_activatable
     }
+
+    Stack<History> myHistory = new Stack<History>();
     /// <summary>
     /// current position of gameObject
     /// </summary>
@@ -27,7 +29,6 @@ public abstract class InGameObject : MonoBehaviour {
     { get { return currentStatus; } }
     protected virtual void Awake()
     {
-        HistoryManager.instance.SaveMove(this, new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)), true);
     }
 
     protected virtual void OnEnable()
@@ -36,7 +37,7 @@ public abstract class InGameObject : MonoBehaviour {
     }
     protected virtual void Start()
     {
-        
+        Debug.Log("activateCheck");
         ActivateCheck();
     }
 
@@ -82,5 +83,29 @@ public abstract class InGameObject : MonoBehaviour {
     protected void SetSortingOrder()
     {
         transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
+    }
+
+    public virtual void SaveHistory()
+    {
+        myHistory.Push(new History(currentStatus,currentPos));
+    }
+
+    public virtual void RollBack()
+    {
+        if (myHistory.Count == 0)
+        {
+            Destroy(this.gameObject);
+        }
+        else if (myHistory.Count > 0)
+        {
+            //remove current data
+           // myHistory.Pop();
+            History rollbackHistory = myHistory.Pop();
+            currentPos = rollbackHistory.Pos;
+            transform.position = currentPos.ToVector3();
+            currentStatus = rollbackHistory.Status;
+            ActivateCheck();
+        }
+        //SaveHistory();
     }
 }

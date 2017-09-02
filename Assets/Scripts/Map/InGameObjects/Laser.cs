@@ -8,6 +8,8 @@ public class Laser : InGameObject
     public Dir4 Dir { get { return dir; } set { dir = value; } } 
     protected const int maxLength = 20;
 
+    private int laserLength;
+    private Stack<int> laserLengthStack = new Stack<int>();
     /// <summary>
     /// true면 resize를 하고 아니라면 작동x
     /// </summary>
@@ -33,6 +35,7 @@ public class Laser : InGameObject
     /// </summary>
     public void Resize()
     {
+        Debug.Log("resize");
         Position tempEndPos=null;
         if (!isResizing) return;
         if (currentPos == null)
@@ -54,13 +57,12 @@ public class Laser : InGameObject
                 }
                 else
                 {
+                    Debug.Log(temp);
                     tempEndPos = temp.CurrentPos;
                 }
                 break;
             }
         }
-
-
 
         if (tempEndPos == null)
         {
@@ -70,16 +72,36 @@ public class Laser : InGameObject
 
         endPos = tempEndPos;
         Position laserPos = tempEndPos - currentPos;
-        int length;
         if (Mathf.Abs(laserPos.X) > Mathf.Abs(laserPos.Y))
         {
-            length = laserPos.X;
+            laserLength = laserPos.X;
         }
         else
         {
-            length = laserPos.Y;
+            laserLength = laserPos.Y;
         }
-        transform.Find("Sprite").GetComponent<SpriteRenderer>().size = new Vector2(1, Mathf.Abs(length));
+        SetLaserShape();
+    }
+
+    public override void RollBack()
+    {
+        base.RollBack();
+        if (laserLengthStack.Count > 0)
+        {
+            laserLength = laserLengthStack.Pop();
+            SetLaserShape();
+        }
+    }
+
+    public override void SaveHistory()
+    {
+        base.SaveHistory();
+        laserLengthStack.Push(laserLength);
+    }
+
+    private void SetLaserShape()
+    {
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().size = new Vector2(1, Mathf.Abs(laserLength));
         //rotate
         switch (dir)
         {

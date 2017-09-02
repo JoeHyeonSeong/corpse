@@ -30,6 +30,7 @@ public class LaserWall : Wall
 
     public override void Deactivate()
     {
+        Debug.Log(gameObject.name+"시발놈아 왜 꺼지는데");
         base.Deactivate();
         if (myLaser != null)
         {

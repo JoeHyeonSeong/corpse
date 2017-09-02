@@ -33,4 +33,10 @@ public class Character : DestroyableObject
 
         
     }
+
+    public override void Move(Position destination, bool saveHistory, bool anim)
+    {
+        InGameManager.instance.NewPhase();
+        base.Move(destination, saveHistory, anim);
+    }
 }

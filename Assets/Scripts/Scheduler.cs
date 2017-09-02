@@ -29,6 +29,7 @@ public class Scheduler : MonoBehaviour {
         movingObject.Add(obj);
         if (currentCycle == GameCycle.InputTime)
         {
+            //InGameManager.instance.NewPhase();
             currentCycle = GameCycle.MoveTime;
         }
     }
@@ -39,7 +40,6 @@ public class Scheduler : MonoBehaviour {
         //end of move time
         if (movingObject.Count == 0)
         {
-            InGameManager.instance.NewPhase();
             currentCycle = GameCycle.InputTime;
         }
     }

@@ -66,7 +66,7 @@ public class MovableObject : LoadedObject
     /// <param name="destination"></param>
     /// <param name="saveHistory"></param>
     /// <param name="anim"></param>
-    public void Move(Position destination, bool saveHistory, bool anim)
+    public virtual void Move(Position destination, bool saveHistory, bool anim)
     {
         Position tempDir = destination - currentPos;
         //push
@@ -77,7 +77,6 @@ public class MovableObject : LoadedObject
             //can go to destination
             if (saveHistory)
             {
-                Scheduler.instance.MoveReport(this);
             }
             lastPos = currentPos;
             //change current position
@@ -107,6 +106,7 @@ public class MovableObject : LoadedObject
     /// <returns></returns>
     protected IEnumerator MoveCoroutine(bool saveHistory)
     {
+        Scheduler.instance.MoveReport(this);
         Transform mySprite = transform.Find("Sprite");
         mySprite.localPosition = -moveDir.ToVector3();
         for (int i = 0; i < moveSpd; i++)
@@ -128,16 +128,12 @@ public class MovableObject : LoadedObject
 
     private void MoveEnd(bool saveHistory)
     {
-        if (saveHistory)
-        {
-            HistoryManager.instance.SaveMove(this, lastPos,false);
-        }
         //touch
         MapManager.instance.ResizeSideLasers(currentPos);
         //step
         StepCheck();
         isMoving = false;
-        InGameManager.instance.StopSign(this);
+        Scheduler.instance.StopReport(this);
     }
 
     protected void StepCheck()

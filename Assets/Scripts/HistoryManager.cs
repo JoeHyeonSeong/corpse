@@ -1,42 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class HistoryManager : MonoBehaviour
 {
+    int savingPhase = 0;
 
 
-    class MoveHistory
-    {
-        public MoveHistory(InGameObject obj, Position pos, bool generated)
-        {
-            this.obj = obj;
-            this.pos = pos;
-            this.generated = generated;
-        }
-        InGameObject obj;
-        public InGameObject Obj { get { return obj; } }
-        Position pos;
-        public Position Pos { get { return pos; } }
-        bool generated;
-        public bool Generated { get { return generated; } }
-    }
 
 
     public static HistoryManager instance;
 
-    Stack<MoveHistory[]> moveStack;
-    List<MoveHistory> currentHistory = new List<MoveHistory>();
+    Stack<History[]> moveStack;
+    List<History> currentHistory = new List<History>();
 
     private void Awake()
     {
         instance = this;
-        moveStack = new Stack<MoveHistory[]>();
-    }
-
-    public void SaveMove(InGameObject obj, Position pos, bool generated)
-    {
-        currentHistory.Add(new MoveHistory(obj, pos, generated));
+        moveStack = new Stack<History[]>();
     }
 
 
@@ -45,58 +25,43 @@ public class HistoryManager : MonoBehaviour
     /// </summary>
     public void CommitHistory()
     {
-        moveStack.Push(currentHistory.ToArray());
-        currentHistory = new List<MoveHistory>();
+        savingPhase++;
+        Debug.Log(savingPhase);
+        Transform currentMaptf = MapManager.instance.CurrentMap.transform;
+        for (int i = 0; i < currentMaptf.childCount; i++)
+        {
+            currentMaptf.GetChild(i).GetComponent<InGameObject>().SaveHistory();
+        }
     }
+
+
 
     public void RollBack()
     {
-        //stack must have data
+        if (savingPhase == 0)
+            return;
 
-
-        MoveHistory[] rollbackData;
-        do
+        savingPhase--;
+        Debug.Log(savingPhase);
+        Transform currentMaptf = MapManager.instance.CurrentMap.transform;
+        for (int i = 0; i < currentMaptf.childCount; i++)
         {
-            if (moveStack.Count <= 1)
-            {
-                return;
-            }
-            rollbackData = moveStack.Pop();
-        }
-        while (rollbackData.Length == 0);
-        for (int i = 0; i < rollbackData.Length; i++)
-        {
-            MoveHistory his = rollbackData[rollbackData.Length - 1 - i];
-            if (his.Generated && his.Obj != null)
-            {
-                Position lastPos = his.Obj.CurrentPos;
-                Destroy(his.Obj.gameObject);
-                MapManager.instance.ResizeSideLasers(lastPos);
-            }
-            else
-            {
-                if (his.Obj.GetType().IsSubclassOf(typeof(MovableObject)))
-                {
-                    Laser laser=
-                    (Laser)MapManager.instance.Find(typeof(Laser), his.Pos);
-                    if (laser != null)
-                    {
-                        //잠깐동안만 레이저가 못 죽이게 하자
-                        laser.IsResizing=false;
-                    }
-                    ((MovableObject)his.Obj).Move(his.Pos,false,false);
-                    if (laser != null)
-                    {
-                        //레이저 다시 죽일수있음
-                        laser.IsResizing=true;
-                    }
-                }
-            }
+            currentMaptf.GetChild(i).GetComponent<InGameObject>().RollBack();
         }
     }
+}
 
-    private void Start()
+
+
+public class History
+{
+    public History(InGameObject.ActiveStatus status, Position pos)
     {
-        CommitHistory();
+        this.status = status;
+        this.pos = pos;
     }
+    InGameObject.ActiveStatus status;
+    public InGameObject.ActiveStatus Status { get { return status; } }
+    Position pos;
+    public Position Pos { get { return pos; } }
 }

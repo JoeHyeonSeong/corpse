@@ -9,11 +9,6 @@ public class InGameManager : MonoBehaviour {
         instance = this;
     }
 
-    public void StopSign(InGameObject obj)
-    {
-        Scheduler.instance.StopReport(obj);
-    }
-
     public void NewPhase()
     {
         HistoryManager.instance.CommitHistory();

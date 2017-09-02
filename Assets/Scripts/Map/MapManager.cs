@@ -7,6 +7,8 @@ public class MapManager : MonoBehaviour {
     public Position SpacePos { get { return new Position(100, 100); } }
 
     GameObject currentMapPrefs;
+    private GameObject currentMap;
+    public GameObject CurrentMap { get { return currentMap; } }
     /// <summary>
     ///objects in one block [pos.x,pos.y] can find with Position
     /// </summary>
@@ -34,7 +36,7 @@ public class MapManager : MonoBehaviour {
         HandOverData.Stagenum = 1;
         // currentMapPrefs=Resources.Load<GameObject>("Prefab/Map/Stage"+HandOverData.Stagenum.ToString());
         currentMapPrefs = makingMapPref;
-        Instantiate(currentMapPrefs);
+        currentMap=Instantiate(currentMapPrefs);
     }
 
     /// <summary>
