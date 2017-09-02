@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapManager : MonoBehaviour {
+
+    public Position SpacePos { get { return new Position(100, 100); } }
+
     GameObject currentMapPrefs;
     /// <summary>
     ///objects in one block [pos.x,pos.y] can find with Position
@@ -56,7 +59,7 @@ public class MapManager : MonoBehaviour {
                 noObstable=false;
             }
         }
-        if(existFloor&&noObstable)
+        if(pos==SpacePos||(existFloor&&noObstable))
         {
             return true;
         }

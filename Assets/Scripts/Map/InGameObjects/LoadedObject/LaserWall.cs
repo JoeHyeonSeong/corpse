@@ -15,14 +15,15 @@ public class LaserWall : Wall
     protected override void Awake()
     {
         base.Awake();
-        myLaser = Instantiate<Laser>(Resources.Load<Laser>("Prefab/InGameObject/Laser")
-           , transform.position, Quaternion.identity, this.transform.parent);
-        myLaser.Dir = this.dir;
+        MakeLaser();
     }
 
     public override void Activate()
     {
         base.Activate();
+        MakeLaser();
+
+
         myLaser.gameObject.SetActive(true);
         myLaser.Resize();
     }
@@ -33,6 +34,20 @@ public class LaserWall : Wall
         if (myLaser != null)
         {
 
+            myLaser.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// set myLaser if it is null
+    /// </summary>
+    protected void MakeLaser()
+    {
+        if (myLaser == null)
+        {
+            myLaser = Instantiate<Laser>(Resources.Load<Laser>("Prefab/InGameObject/Laser")
+   , transform.position, Quaternion.identity, this.transform.parent);
+            myLaser.Dir = this.dir;
             myLaser.gameObject.SetActive(false);
         }
     }

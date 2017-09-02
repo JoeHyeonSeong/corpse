@@ -34,7 +34,7 @@ public class MovableObject : LoadedObject
         Position des = currentPos + dir;
         if (MapManager.instance.CanGo(des))
         {
-            List<InGameObject> currentBlockData=MapManager.instance.BlockData(des);
+            List<InGameObject> currentBlockData = MapManager.instance.BlockData(des);
             bool iceCheck = false;
             foreach (InGameObject obj in currentBlockData)
             {
@@ -59,14 +59,17 @@ public class MovableObject : LoadedObject
         base.Awake();
         moveDir = new Position(0, 0);
     }
+
     /// <summary>
-    /// move to destination if not walk to teleport is true
+    /// move to destination if can
     /// </summary>
     /// <param name="destination"></param>
-    /// <param name="teleport"></param>
+    /// <param name="saveHistory"></param>
+    /// <param name="anim"></param>
     public void Move(Position destination, bool saveHistory, bool anim)
     {
         Position tempDir = destination - currentPos;
+        //push
         PushCheck(destination);
 
         if (MapManager.instance.CanGo(destination))
@@ -76,13 +79,13 @@ public class MovableObject : LoadedObject
             {
                 Scheduler.instance.MoveReport(this);
             }
-            //leave
-            LeaveCheck();
-            //change current position
             lastPos = currentPos;
+            //change current position
             currentPos = destination;
             moveDir = tempDir;
             transform.position = currentPos.ToVector3();
+            //leave
+            LeaveCheck();
             //resize laser
             MapManager.instance.ResizeSideLasers(lastPos);
             transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
@@ -117,22 +120,23 @@ public class MovableObject : LoadedObject
 
     public override void Teleport(Position des)
     {
+        lastPos = currentPos;
         base.Teleport(des);
-        List<InGameObject> currentBlock = MapManager.instance.BlockData(des);
+        LeaveCheck();
         StepCheck();
     }
 
     private void MoveEnd(bool saveHistory)
     {
-        StepCheck();
-        //touch
-        TouchCheck();
-        isMoving = false;
         if (saveHistory)
         {
-            HistoryManager.instance.SaveMove(this,lastPos, false);
+            HistoryManager.instance.SaveMove(this, lastPos,false);
         }
-        
+        //touch
+        MapManager.instance.ResizeSideLasers(currentPos);
+        //step
+        StepCheck();
+        isMoving = false;
         InGameManager.instance.StopSign(this);
     }
 
@@ -152,7 +156,11 @@ public class MovableObject : LoadedObject
     protected void LeaveCheck()
     {
         //leave
-        List<InGameObject> originDesBlockData = MapManager.instance.BlockData(currentPos);
+        if (lastPos == null)
+        {
+            return;
+        }
+        List<InGameObject> originDesBlockData = MapManager.instance.BlockData(lastPos);
         foreach (InGameObject obj in originDesBlockData)
         {
             if (obj.GetType().IsSubclassOf(typeof(Floor)) || obj.GetType() == typeof(Floor))
@@ -185,14 +193,14 @@ public class MovableObject : LoadedObject
         return push;
     }
 
-    public void Slide(Position destination,bool haveToMove)
+    public void Slide(Position destination, bool haveToMove)
     {
-        if (isMoving||haveToMove)
+        if (isMoving || haveToMove)
         {
             bool pushResult = PushCheck(destination);
             if (pushResult == false)
             {
-                Move(destination, true, true);
+                Move(destination,true,true);
             }
         }
     }

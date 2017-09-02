@@ -9,12 +9,6 @@ public class InGameManager : MonoBehaviour {
         instance = this;
     }
 
-    public void MoveSign(InGameObject obj)
-    {
-        Scheduler.instance.MoveReport(obj);
-        HistoryManager.instance.SaveMove(obj, obj.CurrentPos,false);
-    }
-
     public void StopSign(InGameObject obj)
     {
         Scheduler.instance.StopReport(obj);

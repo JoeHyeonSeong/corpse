@@ -9,6 +9,11 @@ public class Laser : InGameObject
     protected const int maxLength = 20;
 
     /// <summary>
+    /// true면 resize를 하고 아니라면 작동x
+    /// </summary>
+    protected bool isResizing=true;
+    public bool IsResizing { set { isResizing = value; } }
+    /// <summary>
     /// lasers end position
     /// </summary>
     protected Position endPos;
@@ -21,22 +26,7 @@ public class Laser : InGameObject
         GetComponent<BoxCollider2D>().offset = new Vector2(0, Mathf.Abs(maxLength / 2f));
         
     }
-    public void Touch(LoadedObject who)
-    {
-        if (endPos == null)
-        {
-            endPos = currentPos + Direction.Dir4ToPos(dir) * maxLength;
-        }
-        if (who.GetType().IsSubclassOf(typeof(DestroyableObject))
-            &&(who.CurrentPos-currentPos).magnitude <= (endPos - currentPos).magnitude)
-        {
-            ((DestroyableObject)who).Destroy();
-        }
-        else
-        {
-            Resize();
-        }
-    }
+
 
     /// <summary>
     /// resize laser's length
@@ -44,6 +34,7 @@ public class Laser : InGameObject
     public void Resize()
     {
         Position tempEndPos=null;
+        if (!isResizing) return;
         if (currentPos == null)
         {
             Start();
@@ -55,10 +46,22 @@ public class Laser : InGameObject
             if (temp.GetType().IsSubclassOf(typeof(LoadedObject))
                 &&temp.GetType()!=typeof(LaserWall))
             {
-                tempEndPos = temp.CurrentPos;
+                if (temp.GetType().IsSubclassOf(typeof(DestroyableObject)))
+                {
+                    ((DestroyableObject)temp).Destroy();
+                    Resize();
+                    return;
+                }
+                else
+                {
+                    tempEndPos = temp.CurrentPos;
+                }
                 break;
             }
         }
+
+
+
         if (tempEndPos == null)
         {
             tempEndPos = currentPos + Direction.Dir4ToPos(dir) * maxLength;

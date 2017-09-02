@@ -77,8 +77,19 @@ public class HistoryManager : MonoBehaviour
             {
                 if (his.Obj.GetType().IsSubclassOf(typeof(MovableObject)))
                 {
-
+                    Laser laser=
+                    (Laser)MapManager.instance.Find(typeof(Laser), his.Pos);
+                    if (laser != null)
+                    {
+                        //잠깐동안만 레이저가 못 죽이게 하자
+                        laser.IsResizing=false;
+                    }
                     ((MovableObject)his.Obj).Move(his.Pos,false,false);
+                    if (laser != null)
+                    {
+                        //레이저 다시 죽일수있음
+                        laser.IsResizing=true;
+                    }
                 }
             }
         }

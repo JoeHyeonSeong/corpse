@@ -38,7 +38,6 @@ public class WallMakeFloor : Floor {
         }
     }
 
-
     /// <summary>
     /// create wall if it is possible
     /// </summary>
