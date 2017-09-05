@@ -32,10 +32,7 @@ public class GenPoint :Floor {
     public override void Deactivate()
     {
         base.Deactivate();
-        if(IsActivatedGenPoint)
-        {
-
-        }
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().color = Color.gray;
     }
 
     public override void Activate()
@@ -44,6 +41,7 @@ public class GenPoint :Floor {
         if (!IsActivatedGenPoint)
         {
             activatingGenPoint = this;
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
 }

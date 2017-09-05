@@ -10,11 +10,7 @@ public class Laser : InGameObject
 
     private int laserLength;
     private Stack<int> laserLengthStack = new Stack<int>();
-    /// <summary>
-    /// true면 resize를 하고 아니라면 작동x
-    /// </summary>
-    protected bool isResizing=true;
-    public bool IsResizing { set { isResizing = value; } }
+
     /// <summary>
     /// lasers end position
     /// </summary>
@@ -35,9 +31,7 @@ public class Laser : InGameObject
     /// </summary>
     public void Resize()
     {
-        Debug.Log("resize");
         Position tempEndPos=null;
-        if (!isResizing) return;
         if (currentPos == null)
         {
             Start();

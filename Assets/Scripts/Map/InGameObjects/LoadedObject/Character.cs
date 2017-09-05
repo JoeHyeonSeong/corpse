@@ -21,6 +21,9 @@ public class Character : DestroyableObject
         GameObject mycorpse =
        (GameObject) Instantiate(Resources.Load("Prefab/InGameObject/Corpse"),
         currentPos.ToVector3(), Quaternion.identity, transform.parent);
+        //시체 방향
+        mycorpse.transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX =
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
         //gen point 에서 다시 살아남
         Position lastPos = currentPos;
         Ice underIce = (Ice)MapManager.instance.Find(typeof(Ice), currentPos);
@@ -38,5 +41,16 @@ public class Character : DestroyableObject
     {
         InGameManager.instance.NewPhase();
         base.Move(destination, saveHistory, anim);
+        bool flipX= transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
+        if (moveDir == new Position(1, 0))
+        {
+            flipX = true;
+        }
+        else if (moveDir == new Position(-1, 0))
+        {
+            flipX = false;
+        }
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX = flipX;
     }
 }
+

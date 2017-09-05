@@ -32,7 +32,6 @@ public class DisposableButton : Button {
         base.RollBack();
         if (neverUseStack.Count > 0)
         {
-            neverUseStack.Pop();
             neverUsed = neverUseStack.Pop();
         }
     }

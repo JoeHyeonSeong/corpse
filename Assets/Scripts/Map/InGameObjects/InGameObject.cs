@@ -37,7 +37,6 @@ public abstract class InGameObject : MonoBehaviour {
     }
     protected virtual void Start()
     {
-        Debug.Log("activateCheck");
         ActivateCheck();
     }
 
@@ -82,7 +81,10 @@ public abstract class InGameObject : MonoBehaviour {
 
     protected void SetSortingOrder()
     {
-        transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
+        if (transform.Find("Sprite") != null)
+        {
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
+        }
     }
 
     public virtual void SaveHistory()
@@ -98,12 +100,11 @@ public abstract class InGameObject : MonoBehaviour {
         }
         else if (myHistory.Count > 0)
         {
-            //remove current data
-           // myHistory.Pop();
             History rollbackHistory = myHistory.Pop();
             currentPos = rollbackHistory.Pos;
             transform.position = currentPos.ToVector3();
             currentStatus = rollbackHistory.Status;
+            SetSortingOrder();
             ActivateCheck();
         }
         //SaveHistory();
