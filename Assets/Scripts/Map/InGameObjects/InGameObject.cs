@@ -10,7 +10,9 @@ public abstract class InGameObject : MonoBehaviour {
         deactivating,
         non_activatable
     }
-
+    protected int activatingPoint;
+    [SerializeField]
+   private int ActivateThreshold;
     Stack<History> myHistory = new Stack<History>();
     /// <summary>
     /// current position of gameObject
@@ -43,15 +45,44 @@ public abstract class InGameObject : MonoBehaviour {
     /// <summary>
     /// convert currentStatus to true
     /// </summary>
-    public virtual void Activate()
+    protected virtual void Activate()
     {
         currentStatus = ActiveStatus.activating;
     }
 
+    public virtual void AddStack()
+    {
+        activatingPoint++;
+        if (activatingPoint == ActivateThreshold)
+        {
+            FlipStatus();
+        }
+    }
+
+    public virtual void SubStack()
+    {
+        activatingPoint--;
+        if (activatingPoint == ActivateThreshold-1)
+        {
+            FlipStatus();
+        }
+    }
+
+    protected virtual void FlipStatus()
+    {
+        if (currentStatus == ActiveStatus.activating)
+        {
+            Deactivate();
+        }
+        else if (currentStatus == ActiveStatus.deactivating)
+        {
+            Activate();
+        }
+    }
     /// <summary>
     /// convert currentStatus to false
     /// </summary>
-    public virtual void Deactivate()
+    protected virtual void Deactivate()
     {
         currentStatus = ActiveStatus.deactivating;
     }

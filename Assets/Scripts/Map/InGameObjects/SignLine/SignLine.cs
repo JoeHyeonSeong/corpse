@@ -7,13 +7,13 @@ public abstract class SignLine :InGameObject{
   protected Sprite sprite_on;
   protected Sprite sprite_off;
 
-    public override void Activate()
+    protected override void Activate()
     {
         base.Activate();
         transform.Find("Sprite").GetComponent<SpriteRenderer>().sprite = sprite_on;
     }
 
-    public override void Deactivate()
+    protected override void Deactivate()
     {
         base.Deactivate();
         transform.Find("Sprite").GetComponent<SpriteRenderer>().sprite = sprite_off;

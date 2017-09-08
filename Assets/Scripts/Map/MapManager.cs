@@ -19,7 +19,6 @@ public class MapManager : MonoBehaviour {
         {
             instance = this;
         }
-
     }
 
     public GameObject makingMapPref;

@@ -30,17 +30,17 @@ public class Character : DestroyableObject
         Teleport(GenPoint.ActivatingGenPoint.CurrentPos);
         if (isMoving && underIce != null)
         {
-            StopCoroutine(MoveCoroutine(true));
+            StopCoroutine(MoveCoroutine());
             mycorpse.GetComponent<Corpse>().Slide(lastPos + moveDir,true);
         }
 
         
     }
 
-    public override void Move(Position destination, bool saveHistory, bool anim)
+    public override void Move(Position destination,  bool anim)
     {
         InGameManager.instance.NewPhase();
-        base.Move(destination, saveHistory, anim);
+        base.Move(destination,  anim);
         bool flipX= transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
         if (moveDir == new Position(1, 0))
         {

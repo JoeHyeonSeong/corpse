@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WallMakeFloor : Floor {
     MakedWall myWall;
-    public override void Activate()
+    protected override void Activate()
     {
         base.Activate();
 
@@ -17,7 +17,7 @@ public class WallMakeFloor : Floor {
         myWall = Instantiate(Resources.Load<MakedWall>("Prefab/InGameObject/MakedWall"),
         transform.position, Quaternion.identity, transform.parent);
     }
-    public override void Deactivate()
+    protected override void Deactivate()
     {
         base.Deactivate();
         if (myWall != null)

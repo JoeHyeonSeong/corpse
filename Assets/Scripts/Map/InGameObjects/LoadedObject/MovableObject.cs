@@ -49,7 +49,7 @@ public class MovableObject : LoadedObject
             }
             else
             {
-                Move(des, true, true);
+                Move(des, true);
             }
         }
     }
@@ -64,20 +64,19 @@ public class MovableObject : LoadedObject
     /// move to destination if can
     /// </summary>
     /// <param name="destination"></param>
-    /// <param name="saveHistory"></param>
+    /// <param name="isSliding"></param>
     /// <param name="anim"></param>
-    public virtual void Move(Position destination, bool saveHistory, bool anim)
+    public virtual void Move(Position destination, bool anim)
     {
         Position tempDir = destination - currentPos;
         //push
         PushCheck(destination);
 
+
+
         if (MapManager.instance.CanGo(destination))
         {
             //can go to destination
-            if (saveHistory)
-            {
-            }
             lastPos = currentPos;
             //change current position
             currentPos = destination;
@@ -90,11 +89,11 @@ public class MovableObject : LoadedObject
             transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
             if (anim)
             {
-                StartCoroutine(MoveCoroutine(saveHistory));
+                StartCoroutine(MoveCoroutine());
             }
             else
             {
-                MoveEnd(saveHistory);
+                MoveEnd();
             }
         }
 
@@ -104,7 +103,7 @@ public class MovableObject : LoadedObject
     /// change 'sprite' position
     /// </summary>
     /// <returns></returns>
-    protected IEnumerator MoveCoroutine(bool saveHistory)
+    protected IEnumerator MoveCoroutine()
     {
         Scheduler.instance.MoveReport(this);
         Transform mySprite = transform.Find("Sprite");
@@ -115,7 +114,7 @@ public class MovableObject : LoadedObject
             mySprite.localPosition += 1f / moveSpd * moveDir.ToVector3();
             yield return new WaitForEndOfFrame();
         }
-        MoveEnd(saveHistory);
+        MoveEnd();
     }
 
     public override void Teleport(Position des)
@@ -126,7 +125,7 @@ public class MovableObject : LoadedObject
         StepCheck();
     }
 
-    private void MoveEnd(bool saveHistory)
+    private void MoveEnd()
     {
         //touch
         MapManager.instance.ResizeSideLasers(currentPos);
@@ -174,6 +173,7 @@ public class MovableObject : LoadedObject
     /// <returns></returns>
     protected bool PushCheck(Position at)
     {
+        Debug.Log("Push");
         Position tempDir = at - currentPos;
         List<InGameObject> desBlockData = MapManager.instance.BlockData(at);
         bool push = false;
@@ -191,12 +191,13 @@ public class MovableObject : LoadedObject
 
     public void Slide(Position destination, bool haveToMove)
     {
+        Debug.Log("dd");
         if (isMoving || haveToMove)
         {
             bool pushResult = PushCheck(destination);
             if (pushResult == false)
             {
-                Move(destination,true,true);
+                Move(destination,true);
             }
         }
     }

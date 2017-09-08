@@ -51,7 +51,6 @@ public class Laser : InGameObject
                 }
                 else
                 {
-                    Debug.Log(temp);
                     tempEndPos = temp.CurrentPos;
                 }
                 break;

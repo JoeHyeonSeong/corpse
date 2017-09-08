@@ -25,7 +25,7 @@ public class Spine : Floor {
         }
     }
 
-    public override void Activate()
+    protected override void Activate()
     {
         base.Activate();
         transform.Find("Sprite").GetComponent<SpriteRenderer>().sprite = spineOn;
@@ -40,7 +40,7 @@ public class Spine : Floor {
         }
     }
 
-    public override void Deactivate()
+    protected override void Deactivate()
     {
         base.Deactivate();
         transform.Find("Sprite").GetComponent<SpriteRenderer>().sprite = spineOff;

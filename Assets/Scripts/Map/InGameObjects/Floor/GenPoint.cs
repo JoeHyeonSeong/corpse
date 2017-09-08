@@ -29,13 +29,13 @@ public class GenPoint :Floor {
     /// <summary>
     /// if this genpoint is activating, deactivate
     /// </summary>
-    public override void Deactivate()
+    protected override void Deactivate()
     {
         base.Deactivate();
         transform.Find("Sprite").GetComponent<SpriteRenderer>().color = Color.gray;
     }
 
-    public override void Activate()
+    protected override void Activate()
     {
         base.Activate();
         if (!IsActivatedGenPoint)

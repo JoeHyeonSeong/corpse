@@ -18,7 +18,7 @@ public class LaserWall : Wall
         MakeLaser();
     }
 
-    public override void Activate()
+    protected override void Activate()
     {
         base.Activate();
         MakeLaser();
@@ -28,7 +28,7 @@ public class LaserWall : Wall
         myLaser.Resize();
     }
 
-    public override void Deactivate()
+    protected override void Deactivate()
     {
         base.Deactivate();
         if (myLaser != null)

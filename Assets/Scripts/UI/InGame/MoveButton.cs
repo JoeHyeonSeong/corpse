@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-public class MoveButton :MonoBehaviour,  IPointerUpHandler, IPointerDownHandler
+public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 {
     Vector2 pressStartPos;
     const float dragThreshold = 10f;
@@ -15,50 +15,33 @@ public class MoveButton :MonoBehaviour,  IPointerUpHandler, IPointerDownHandler
             //deny input
             return;
         }
-
+        Position result;
         Vector2 resultVec = data.position - pressStartPos;
         if (resultVec.magnitude > dragThreshold)
         {
-            Position additionalPos;
             if (Mathf.Abs(resultVec.x) > Mathf.Abs(resultVec.y))
             {
                 if (resultVec.x > 0)
                 {
-                    additionalPos = Direction.Dir4ToPos(Dir4.Right);
+                    result = Direction.Dir4ToPos(Dir4.Right);
                 }
                 else
                 {
-                    additionalPos = Direction.Dir4ToPos(Dir4.Left);
+                    result = Direction.Dir4ToPos(Dir4.Left);
                 }
             }
             else
             {
                 if (resultVec.y > 0)
                 {
-                    additionalPos = Direction.Dir4ToPos(Dir4.Up);
+                    result = Direction.Dir4ToPos(Dir4.Up);
                 }
                 else
                 {
-                    additionalPos = Direction.Dir4ToPos(Dir4.Down);
+                    result = Direction.Dir4ToPos(Dir4.Down);
                 }
             }
-            List<InGameObject> characterBlockData = MapManager.instance.BlockData(Character.instance.CurrentPos);
-            bool ice = false;
-            foreach (InGameObject obj in characterBlockData)
-            {
-                if (obj.GetType() == typeof(Ice))
-                {
-                    ice = true;
-                }
-            }
-            if (ice)
-            {
-                Character.instance.Slide(Character.instance.CurrentPos + additionalPos, true);
-            }
-            else
-            {
-                Character.instance.Move(Character.instance.CurrentPos + additionalPos, true, true);
-            }
+            Move(result);
         }
     }
 
@@ -66,4 +49,41 @@ public class MoveButton :MonoBehaviour,  IPointerUpHandler, IPointerDownHandler
     {
         pressStartPos = data.pressPosition;
     }
+
+    private void Update()
+    {
+        Position pos = null;
+        if (Input.GetKeyDown(KeyCode.W)) pos = Direction.Dir4ToPos(Dir4.Up);
+        if (Input.GetKeyDown(KeyCode.S)) pos = Direction.Dir4ToPos(Dir4.Down);
+        if (Input.GetKeyDown(KeyCode.A)) pos = Direction.Dir4ToPos(Dir4.Left);
+        if (Input.GetKeyDown(KeyCode.D)) pos = Direction.Dir4ToPos(Dir4.Right);
+        if (pos != null)
+        {
+            Move(pos);
+        }
+    }
+
+    protected void Move(Position dir)
+    {
+        Debug.Log("aa");
+        List<InGameObject> characterBlockData = MapManager.instance.BlockData(Character.instance.CurrentPos);
+        bool ice = false;
+        foreach (InGameObject obj in characterBlockData)
+        {
+            if (obj.GetType() == typeof(Ice))
+            {
+                ice = true;
+            }
+        }
+        if (ice)
+        {
+            Character.instance.Slide(Character.instance.CurrentPos + dir, true);
+        }
+        else
+        {
+            Character.instance.Move(Character.instance.CurrentPos + dir, true);
+        }
+
+    }
 }
+

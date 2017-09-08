@@ -12,26 +12,29 @@ public class Button : Floor {
 
     public override void Step(MovableObject who)
     {
-        FlipStatus();
+        ButtonOn();
     }
 
     public override void Leave(MovableObject who)
     {
-        FlipStatus();
+        ButtonOff();
     }
 
-    private void FlipStatus()
+    private void ButtonOn()
     {
         foreach (InGameObject operand in operands)
         {
-            if (operand.CurrentStatus == ActiveStatus.activating)
-            {
-                operand.Deactivate();
-            }
-            else if (operand.CurrentStatus == ActiveStatus.deactivating)
-            {
-                operand.Activate();
-            }
+
+            operand.AddStack();
+        }
+    }
+
+    private void ButtonOff()
+    {
+        foreach (InGameObject operand in operands)
+        {
+
+            operand.SubStack();
         }
     }
 }
