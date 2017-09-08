@@ -39,7 +39,6 @@ public class Character : DestroyableObject
 
     public override void Move(Position destination,  bool anim)
     {
-        InGameManager.instance.NewPhase();
         base.Move(destination,  anim);
         bool flipX= transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
         if (moveDir == new Position(1, 0))

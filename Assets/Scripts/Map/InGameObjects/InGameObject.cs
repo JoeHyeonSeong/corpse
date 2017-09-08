@@ -10,7 +10,7 @@ public abstract class InGameObject : MonoBehaviour {
         deactivating,
         non_activatable
     }
-    protected int activatingPoint;
+    protected int activatingPoint=0;
     [SerializeField]
    private int ActivateThreshold;
     Stack<History> myHistory = new Stack<History>();
@@ -57,12 +57,24 @@ public abstract class InGameObject : MonoBehaviour {
         {
             FlipStatus();
         }
+        else if (activatingPoint > ActivateThreshold)
+        {
+            activatingPoint = ActivateThreshold;
+        }
     }
 
     public virtual void SubStack()
     {
-        activatingPoint--;
-        if (activatingPoint == ActivateThreshold-1)
+        bool wasThreshold=false;
+        if (activatingPoint == ActivateThreshold)
+        {
+            wasThreshold = true;
+        }
+        if (activatingPoint > 0)
+        {
+            activatingPoint--;
+        }
+        if (wasThreshold)
         {
             FlipStatus();
         }
@@ -120,7 +132,7 @@ public abstract class InGameObject : MonoBehaviour {
 
     public virtual void SaveHistory()
     {
-        myHistory.Push(new History(currentStatus,currentPos));
+        myHistory.Push(new History(currentStatus,currentPos,activatingPoint));
     }
 
     public virtual void RollBack()
@@ -135,9 +147,9 @@ public abstract class InGameObject : MonoBehaviour {
             currentPos = rollbackHistory.Pos;
             transform.position = currentPos.ToVector3();
             currentStatus = rollbackHistory.Status;
+            activatingPoint = rollbackHistory.ActivatingPoint;
             SetSortingOrder();
             ActivateCheck();
         }
-        //SaveHistory();
     }
 }

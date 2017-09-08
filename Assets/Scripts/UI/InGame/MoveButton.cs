@@ -65,7 +65,7 @@ public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 
     protected void Move(Position dir)
     {
-        Debug.Log("aa");
+        InGameManager.instance.NewPhase();
         List<InGameObject> characterBlockData = MapManager.instance.BlockData(Character.instance.CurrentPos);
         bool ice = false;
         foreach (InGameObject obj in characterBlockData)

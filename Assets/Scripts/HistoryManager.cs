@@ -10,13 +10,10 @@ public class HistoryManager : MonoBehaviour
 
     public static HistoryManager instance;
 
-    Stack<History[]> moveStack;
-    List<History> currentHistory = new List<History>();
 
     private void Awake()
     {
         instance = this;
-        moveStack = new Stack<History[]>();
     }
 
 
@@ -26,7 +23,6 @@ public class HistoryManager : MonoBehaviour
     public void CommitHistory()
     {
         savingPhase++;
-        Debug.Log(savingPhase);
         Transform currentMaptf = MapManager.instance.CurrentMap.transform;
         for (int i = 0; i < currentMaptf.childCount; i++)
         {
@@ -42,7 +38,6 @@ public class HistoryManager : MonoBehaviour
             return;
 
         savingPhase--;
-        Debug.Log(savingPhase);
         Transform currentMaptf = MapManager.instance.CurrentMap.transform;
         for (int i = 0; i < currentMaptf.childCount; i++)
         {
@@ -55,13 +50,16 @@ public class HistoryManager : MonoBehaviour
 
 public class History
 {
-    public History(InGameObject.ActiveStatus status, Position pos)
+    public History(InGameObject.ActiveStatus status, Position pos,int activatingPoint)
     {
         this.status = status;
         this.pos = pos;
+        this.activatingPoint = activatingPoint;
     }
     InGameObject.ActiveStatus status;
     public InGameObject.ActiveStatus Status { get { return status; } }
     Position pos;
     public Position Pos { get { return pos; } }
+    int activatingPoint;
+    public int ActivatingPoint { get { return activatingPoint; } }
 }

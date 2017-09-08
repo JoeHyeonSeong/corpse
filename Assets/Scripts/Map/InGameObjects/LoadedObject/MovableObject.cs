@@ -173,17 +173,18 @@ public class MovableObject : LoadedObject
     /// <returns></returns>
     protected bool PushCheck(Position at)
     {
-        Debug.Log("Push");
         Position tempDir = at - currentPos;
         List<InGameObject> desBlockData = MapManager.instance.BlockData(at);
         bool push = false;
         //push
         foreach (InGameObject obj in desBlockData)
         {
-            if (obj.GetType().IsSubclassOf(typeof(LoadedObject)))
+            if (obj.GetType().IsSubclassOf(typeof(LoadedObject))//pushable
+               &&!(MapManager.instance.Find(typeof(Ice),currentPos)!=null&&
+               MapManager.instance.Find(typeof(Floor),at) != null && isMoving))
             {
-                ((LoadedObject)obj).Push(this, tempDir);
-                push = true;
+                    ((LoadedObject)obj).Push(this, tempDir);
+                    push = true;
             }
         }
         return push;
@@ -191,13 +192,16 @@ public class MovableObject : LoadedObject
 
     public void Slide(Position destination, bool haveToMove)
     {
-        Debug.Log("dd");
         if (isMoving || haveToMove)
         {
             bool pushResult = PushCheck(destination);
             if (pushResult == false)
             {
-                Move(destination,true);
+                Move(destination, true);
+            }
+            else if(MapManager.instance.Find(typeof(Ice),destination)==null)
+            {
+                Move(destination, true);
             }
         }
     }

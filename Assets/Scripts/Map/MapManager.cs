@@ -36,6 +36,21 @@ public class MapManager : MonoBehaviour {
         // currentMapPrefs=Resources.Load<GameObject>("Prefab/Map/Stage"+HandOverData.Stagenum.ToString());
         currentMapPrefs = makingMapPref;
         currentMap=Instantiate(currentMapPrefs);
+        //set cam pos
+
+        float minX = 999;
+        float maxX = -999;
+        float minY = 999;
+        float maxY = -999;
+        for (int i = 0; i < currentMap.transform.childCount; i++)
+        {
+            Vector2 childPos = currentMap.transform.GetChild(i).position;
+            if (childPos.x > maxX) maxX = childPos.x;
+            if (childPos.x < minX) minX =childPos.x;
+            if (childPos.y > maxY) maxY = childPos.y;
+            if (childPos.y < minY) minY =childPos.y;
+        }
+        CamCtrl.instance.SetPosition(new Vector2((minX + maxX) / 2, (minY + maxY) / 2));
     }
 
     /// <summary>
