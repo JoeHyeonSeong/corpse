@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DisposableButton : Button {
+public class DisposableButton : FlipButton {
     Stack<bool> neverUseStack = new Stack<bool>();
     bool neverUsed = true;
     public override void Step(MovableObject who)

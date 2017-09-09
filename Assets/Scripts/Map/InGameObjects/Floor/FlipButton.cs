@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Button : Floor {
+public class FlipButton : Floor {
     protected override void Awake()
     {
         base.Awake();
