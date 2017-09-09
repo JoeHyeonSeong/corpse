@@ -26,7 +26,12 @@ public class HistoryManager : MonoBehaviour
         Transform currentMaptf = MapManager.instance.CurrentMap.transform;
         for (int i = 0; i < currentMaptf.childCount; i++)
         {
-            currentMaptf.GetChild(i).GetComponent<InGameObject>().SaveHistory();
+            //layer
+            Transform layer = currentMaptf.GetChild(i);
+            for (int j = 0; j < layer.childCount; j++)
+            {
+                layer.GetChild(j).GetComponent<InGameObject>().SaveHistory();
+            }
         }
     }
 
@@ -41,7 +46,12 @@ public class HistoryManager : MonoBehaviour
         Transform currentMaptf = MapManager.instance.CurrentMap.transform;
         for (int i = 0; i < currentMaptf.childCount; i++)
         {
-            currentMaptf.GetChild(i).GetComponent<InGameObject>().RollBack();
+            //layer
+            Transform layer = currentMaptf.GetChild(i);
+            for (int j = 0; j < layer.childCount; j++)
+            {
+                layer.GetChild(j).GetComponent<InGameObject>().RollBack();
+            }
         }
     }
 }

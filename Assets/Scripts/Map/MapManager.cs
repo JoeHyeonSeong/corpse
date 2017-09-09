@@ -44,11 +44,16 @@ public class MapManager : MonoBehaviour {
         float maxY = -999;
         for (int i = 0; i < currentMap.transform.childCount; i++)
         {
-            Vector2 childPos = currentMap.transform.GetChild(i).position;
-            if (childPos.x > maxX) maxX = childPos.x;
-            if (childPos.x < minX) minX =childPos.x;
-            if (childPos.y > maxY) maxY = childPos.y;
-            if (childPos.y < minY) minY =childPos.y;
+            //layer
+            Transform layer = currentMap.transform.GetChild(i);
+            for (int j = 0; j <layer.childCount; j++)
+            {
+                Vector2 childPos = layer.GetChild(j).position;
+                if (childPos.x > maxX) maxX = childPos.x;
+                if (childPos.x < minX) minX = childPos.x;
+                if (childPos.y > maxY) maxY = childPos.y;
+                if (childPos.y < minY) minY = childPos.y;
+            }
         }
         CamCtrl.instance.SetPosition(new Vector2((minX + maxX) / 2, (minY + maxY) / 2));
     }

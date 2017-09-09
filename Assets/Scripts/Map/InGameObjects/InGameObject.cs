@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class InGameObject : MonoBehaviour {
+public abstract class InGameObject : MonoBehaviour
+{
 
     public enum ActiveStatus
     {
@@ -10,9 +11,9 @@ public abstract class InGameObject : MonoBehaviour {
         deactivating,
         non_activatable
     }
-    protected int activatingPoint=0;
+    protected int activatingPoint = 0;
     [SerializeField]
-   private int ActivateThreshold;
+    private int ActivateThreshold;
     Stack<History> myHistory = new Stack<History>();
     /// <summary>
     /// current position of gameObject
@@ -31,15 +32,25 @@ public abstract class InGameObject : MonoBehaviour {
     { get { return currentStatus; } }
     protected virtual void Awake()
     {
+        if (GetComponent<SpriteRenderer>() != null)
+        {
+            GetComponent<SpriteRenderer>().enabled = false;
+        }
     }
 
     protected virtual void OnEnable()
     {
-        Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
+        if (MapManager.instance != null)
+        {
+            Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
+        }
     }
     protected virtual void Start()
     {
-        ActivateCheck();
+        if (MapManager.instance != null)
+        {
+            ActivateCheck();
+        }
     }
 
     /// <summary>
@@ -65,7 +76,7 @@ public abstract class InGameObject : MonoBehaviour {
 
     public virtual void SubStack()
     {
-        bool wasThreshold=false;
+        bool wasThreshold = false;
         if (activatingPoint == ActivateThreshold)
         {
             wasThreshold = true;
@@ -122,17 +133,23 @@ public abstract class InGameObject : MonoBehaviour {
         }
     }
 
-    protected void SetSortingOrder()
+    public void SetSortingOrder()
     {
-        if (transform.Find("Sprite") != null)
+        if (MapManager.instance != null)
         {
-            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
+            if (transform.Find("Sprite") != null)
+            {
+                transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -currentPos.Y * 10;
+            }
+        }
+        else
+        {
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y* 10;
         }
     }
-
     public virtual void SaveHistory()
     {
-        myHistory.Push(new History(currentStatus,currentPos,activatingPoint));
+        myHistory.Push(new History(currentStatus, currentPos, activatingPoint));
     }
 
     public virtual void RollBack()
