@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Ball :MovableObject {
-    protected override void Awake()
+
+    public void Hide()
     {
-        base.Awake();
+        Move(new Position(100, 100), false);
     }
 }

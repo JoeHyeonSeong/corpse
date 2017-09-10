@@ -11,7 +11,6 @@ public class Box : DestroyableObject {
     public override void Destroy()
     {
         //우주로 보내기
-        //HistoryManager.instance.SaveMove(this, currentPos, false);
         Move(new Position(100,100),false);
         Debug.Log("Destroy");
     }

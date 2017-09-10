@@ -24,21 +24,33 @@ public class MoveCamera : MonoBehaviour
 
 	void Update () 
 	{
-		// Get the right mouse button
-		if(Input.GetMouseButtonDown(1))
-		{
-			// Get mouse origin
-			mouseOrigin = Input.mousePosition;
-			isPanning = true;
-		}
-
-		// Disable movements on button release
-		if (!Input.GetMouseButton(1)) isPanning=false;
+        const int moveSpeed = 20;
+        Vector3 moveDelta=Vector3.zero;
+        if (Input.GetKey(KeyCode.W)|| Input.GetKey(KeyCode.UpArrow))
+            {
+            moveDelta += Vector3.up;
+            isPanning = true;
+        }
+        if (Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.LeftArrow))
+        {
+            moveDelta += Vector3.left;
+            isPanning = true;
+        }
+        if (Input.GetKey(KeyCode.S)|| Input.GetKey(KeyCode.DownArrow))
+        {
+            moveDelta += Vector3.down;
+            isPanning = true;
+        }
+        if (Input.GetKey(KeyCode.D)||Input.GetKey(KeyCode.RightArrow))
+        {
+            moveDelta += Vector3.right;
+            isPanning = true;
+        }
 
 		// Move the camera on it's XY plane
 		if (isPanning)
 		{
-			Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - mouseOrigin);
+			Vector3 pos = Camera.main.ScreenToViewportPoint(moveDelta*moveSpeed);
 
 			Vector3 move = new Vector3(pos.x * panSpeed, pos.y * panSpeed, 0);
 			transform.Translate(move, Space.Self);
