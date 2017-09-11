@@ -6,10 +6,10 @@ public class Hole : DisposableButton{
 
     public override void Step(MovableObject who)
     {
-        if(who.GetType()==typeof(Ball))
+        if(who.GetType()==typeof(Box))
         {
             base.Step(who);
-            ((Ball)who).Hide();
+            ((Box)who).Pushable = false;
         }
     }
 }
