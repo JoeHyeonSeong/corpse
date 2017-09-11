@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hole : DisposableButton{
+public class Destination : Floor {
 
     public override void Step(MovableObject who)
     {
-        if(who.GetType()==typeof(Box))
+        if (who.GetType() == typeof(Character))
         {
-            base.Step(who);
+            Debug.Log("Clear");
         }
     }
 }

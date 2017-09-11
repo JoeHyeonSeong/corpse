@@ -4,15 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Box : DestroyableObject {
-    private bool pushable;
-    public bool Pushable { get { return pushable; } set { pushable = value; } }
     protected bool destroyCall;
 
-    protected override void Awake()
-    {
-        base.Awake();
-        pushable = true;
-    }
+
     /// <summary>
     /// destroy this box
     /// </summary>
@@ -25,7 +19,7 @@ public class Box : DestroyableObject {
     }
     public override void Push(MovableObject who, Position dir)
     {
-        if (pushable)
+        if (MapManager.instance.Find(typeof(Hole),currentPos)==null)
         {
             base.Push(who, dir);
         }

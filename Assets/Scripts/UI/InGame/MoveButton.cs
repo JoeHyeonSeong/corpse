@@ -52,15 +52,19 @@ public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 
     private void Update()
     {
-        Position pos = null;
-        if (Input.GetKeyDown(KeyCode.W)) pos = Direction.Dir4ToPos(Dir4.Up);
-        if (Input.GetKeyDown(KeyCode.S)) pos = Direction.Dir4ToPos(Dir4.Down);
-        if (Input.GetKeyDown(KeyCode.A)) pos = Direction.Dir4ToPos(Dir4.Left);
-        if (Input.GetKeyDown(KeyCode.D)) pos = Direction.Dir4ToPos(Dir4.Right);
-        if (pos != null)
+        if (Scheduler.instance.CurrentCycle == Scheduler.GameCycle.InputTime)
         {
-            Move(pos);
+            Position pos = null;
+            if (Input.GetKeyDown(KeyCode.W)) pos = Direction.Dir4ToPos(Dir4.Up);
+            if (Input.GetKeyDown(KeyCode.S)) pos = Direction.Dir4ToPos(Dir4.Down);
+            if (Input.GetKeyDown(KeyCode.A)) pos = Direction.Dir4ToPos(Dir4.Left);
+            if (Input.GetKeyDown(KeyCode.D)) pos = Direction.Dir4ToPos(Dir4.Right);
+            if (pos != null)
+            {
+                Move(pos);
+            }
         }
+
     }
 
     protected void Move(Position dir)
