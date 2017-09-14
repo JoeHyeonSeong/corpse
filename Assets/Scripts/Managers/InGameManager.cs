@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InGameManager : MonoBehaviour {
     public static InGameManager instance;
@@ -21,5 +22,12 @@ public class InGameManager : MonoBehaviour {
         HistoryManager.instance.RollBack();
         }
         
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("Game Over");
+        HandOverData.ShowStageInfo = false;
+        SceneManager.LoadScene(SceneName.inGameScene);
     }
 }

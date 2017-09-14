@@ -15,7 +15,6 @@ public class Box : DestroyableObject {
     {
         //우주로 보내기
         Move(new Position(100,100),false);
-        Debug.Log("Destroy");
     }
     public override void Push(MovableObject who, Position dir)
     {

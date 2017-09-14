@@ -15,11 +15,29 @@ public class Character : DestroyableObject
         }
     }
 
+    private int life;
+    public int Life { set { life = value;Debug.Log(life); } }
+
+
     public override void Destroy()
+    {
+        life--;
+        if (life > 0)
+        {
+            Revive();
+        }
+        else
+        {
+            InGameManager.instance.GameOver();
+        }
+        
+    }
+
+    private void Revive()
     {
         //시체 남김
         GameObject mycorpse =
-       (GameObject) Instantiate(Resources.Load("Prefab/InGameObject/Corpse"),
+       (GameObject)Instantiate(Resources.Load("Prefab/InGameObject/Corpse"),
         currentPos.ToVector3(), Quaternion.identity, transform.parent);
         //시체 방향
         mycorpse.transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX =
@@ -31,10 +49,8 @@ public class Character : DestroyableObject
         if (isMoving && underIce != null)
         {
             StopCoroutine(MoveCoroutine());
-            mycorpse.GetComponent<Corpse>().Slide(lastPos + moveDir,true);
+            mycorpse.GetComponent<Corpse>().Slide(lastPos + moveDir, true);
         }
-
-        
     }
 
     public override void Move(Position destination,  bool anim)

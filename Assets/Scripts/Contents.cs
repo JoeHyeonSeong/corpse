@@ -49,4 +49,10 @@ public class Direction
                 return new Position(0, 0);
         }
     }
+
+}
+
+public static class SceneName
+{
+    public const string inGameScene = "InGameScene";
 }
