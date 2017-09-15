@@ -6,41 +6,44 @@ using UnityEngine;
 public class GenPoint :Floor {
     protected static GenPoint activatingGenPoint;
     public static GenPoint ActivatingGenPoint { get { return activatingGenPoint; } }
-    public bool IsActivatedGenPoint { get { return this == activatingGenPoint; } }
 
     protected override void Awake()
     {
         base.Awake();
     }
 
+
     public override void Step(MovableObject who)
     {
-        if (activatingGenPoint != this)
-        {
-            if (activatingGenPoint != null)
-            {
-                activatingGenPoint.Deactivate();
-            }
-            Activate();
-        }
+        TurnOn();
     }
 
-
-    /// <summary>
-    /// if this genpoint is activating, deactivate
-    /// </summary>
-    protected override void Deactivate()
-    {
-        base.Deactivate();
-        transform.Find("Sprite").GetComponent<SpriteRenderer>().color = Color.gray;
-    }
 
     protected override void Activate()
     {
         base.Activate();
-        if (!IsActivatedGenPoint)
+        TurnOn();
+    }
+
+    protected override void Deactivate()
+    {
+        if (activatingGenPoint != this)
         {
+            base.Deactivate();
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().color = Color.gray;
+        }
+    }
+
+    protected void TurnOn()
+    {
+        if (activatingGenPoint != this)
+        {
+            GenPoint preActivate = activatingGenPoint;
             activatingGenPoint = this;
+            if (preActivate != null)
+            {
+                preActivate.Deactivate();
+            }
             transform.Find("Sprite").GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
