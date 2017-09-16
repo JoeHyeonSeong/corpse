@@ -13,10 +13,13 @@ public class Character : DestroyableObject
         {
             instance = this;
         }
+        if (MapManager.instance != null)
+        {
+            life = StageInfo.instance.Life;
+        }
     }
 
     private int life;
-    public int Life { set { life = value;Debug.Log(life); } }
 
 
     public override void Destroy()

@@ -13,7 +13,8 @@ public abstract class InGameObject : MonoBehaviour
     }
     protected int activatingPoint = 0;
     [SerializeField]
-    private int ActivateThreshold;
+    private int activateThreshold;
+    public int ActivateThreshold { set { activateThreshold = value; } }
     Stack<History> myHistory = new Stack<History>();
     /// <summary>
     /// current position of gameObject
@@ -29,7 +30,7 @@ public abstract class InGameObject : MonoBehaviour
     /// </summary>
     protected ActiveStatus currentStatus;
     public ActiveStatus CurrentStatus
-    { get { return currentStatus; } }
+    { get { return currentStatus; }set { currentStatus = value; } }
     protected virtual void Awake()
     {
         if (GetComponent<SpriteRenderer>() != null)
@@ -64,20 +65,20 @@ public abstract class InGameObject : MonoBehaviour
     public virtual void AddStack()
     {
         activatingPoint++;
-        if (activatingPoint == ActivateThreshold)
+        if (activatingPoint == activateThreshold)
         {
             FlipStatus();
         }
-        else if (activatingPoint > ActivateThreshold)
+        else if (activatingPoint > activateThreshold)
         {
-            activatingPoint = ActivateThreshold;
+            activatingPoint = activateThreshold;
         }
     }
 
     public virtual void SubStack()
     {
         bool wasThreshold = false;
-        if (activatingPoint == ActivateThreshold)
+        if (activatingPoint == activateThreshold)
         {
             wasThreshold = true;
         }

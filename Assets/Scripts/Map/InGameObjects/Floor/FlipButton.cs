@@ -9,6 +9,7 @@ public class FlipButton : Floor {
     }
     [SerializeField]
     protected List<InGameObject> operands;
+    public List<InGameObject> Operands { set { operands = value; }}
 
     public override void Step(MovableObject who)
     {
