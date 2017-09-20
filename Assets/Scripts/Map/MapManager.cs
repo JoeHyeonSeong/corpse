@@ -35,7 +35,8 @@ public class MapManager : MonoBehaviour {
         HandOverData.Stagenum = 1;
         // currentMapPrefs=Resources.Load<GameObject>("Prefab/Map/Stage"+HandOverData.Stagenum.ToString());
         currentMapPrefs = makingMapPref;
-        currentMap=Instantiate(currentMapPrefs);
+        //currentMap=Instantiate(currentMapPrefs);
+       currentMap = StageLoader.instance.LoadLevelUsingPath(HandOverData.Stage);
         //set cam pos
 
         float minX = 999;

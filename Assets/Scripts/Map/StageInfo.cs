@@ -7,7 +7,7 @@ public class StageInfo : MonoBehaviour {
     private int life=10;
     public int Life {  set { life = value; } get { return life; } }
     [SerializeField]
-    private string title="ㅁㄴㅇㄹ";
+    private string title;
     public string Title { set { title = value; } }
     public static StageInfo instance;
     private void Awake()

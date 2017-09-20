@@ -55,4 +55,31 @@ public class Direction
 public static class SceneName
 {
     public const string inGameScene = "InGameScene";
+    public const string main = "Main";
+}
+
+public static class StageList
+{
+    //각각의 월드에 스테이지가 몇개인지
+    private static int[] StageNo = new int[] { 1, 1, 1 };
+    private static string[,] stageList =new string[,] {
+        {"Level" },//world0
+        {"Level" },//world1
+        {"Level" }//world2
+    };
+
+    public static string GetStageName(int world, int stage)
+    {
+        if (StageNo[world] < stage)
+        {
+            Debug.Log("invalid stage");
+            return null;
+        }
+        return stageList[world, stage];
+    }
+
+    public static int GetStageNo(int world)
+    {
+        return StageNo[world];
+    }
 }

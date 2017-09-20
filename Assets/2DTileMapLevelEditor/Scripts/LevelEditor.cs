@@ -1,4 +1,5 @@
 ﻿// Include basic namespaces
+using UnityEditor;
 using UnityEngine;
 using System.Collections;
 
@@ -16,7 +17,8 @@ using UnityEngine.EventSystems;
 
 public class LevelEditor : MonoBehaviour
 {
-
+    private string currentStageName;
+    private string currentStagePath;
     // The instance of the LevelEditor
     public static LevelEditor instance = null;
     // Whether this script is enabled (false, if the user closes the window)
@@ -81,7 +83,7 @@ public class LevelEditor : MonoBehaviour
     public Sprite noSelectedTileImage;
 
     // File extension used to save and load the levels
-    public string fileExtension = "lvl";
+    public string fileExtension = "txt";
 
     // Boolean to determine whether to show all layers or only the current one
     private bool onlyShowCurrentLayer = false;
@@ -221,7 +223,7 @@ public class LevelEditor : MonoBehaviour
         LAYERS = Mathf.Clamp(LAYERS, 1, LAYERS);
         buttonSize = Mathf.Clamp(buttonSize, 1, buttonSize);
         buttonImageScale = Mathf.Clamp01(buttonImageScale);
-        fileExtension = fileExtension.Trim() == "" ? "lvl" : fileExtension;
+        fileExtension = fileExtension.Trim() == "" ? "txt" : fileExtension;
     }
 
     private void SetupUI()
@@ -288,6 +290,9 @@ public class LevelEditor : MonoBehaviour
         // Hook up LoadLevel method to LoadButton
         GameObject loadButton = FindGameObjectOrError("LoadButton");
         loadButton.GetComponent<Button>().onClick.AddListener(LoadLevel);
+
+        GameObject playButton = FindGameObjectOrError("PlayButton");
+        playButton.GetComponent<Button>().onClick.AddListener(Play);
     }
 
     private void SetupTrigger()
@@ -1284,26 +1289,8 @@ public class LevelEditor : MonoBehaviour
             previewStatus = sts;
         }
     }
-    [Serializable]
-    public struct Wrapper
-    {
-        public int[] array;
-    }
 
-    [Serializable]
-    public class StageData
-    {
-        public int[] level;
-        public int[] threshold;
-        public InGameObject.ActiveStatus[] state;
-        public Vector3[] trigger;
-        public int[] triggerNum;
-        public int height;
-        public int width;
-        public int layer;
-        public int life;
-        public string title;
-    }
+
 
     public T[] To1DArray<T>(T[,,] array3)
     {
@@ -1321,7 +1308,14 @@ public class LevelEditor : MonoBehaviour
         return result.ToArray();
     }
 
-
+    private void Play()
+    {
+        char[] parser = new char[] { '/','\\', '.' };
+        string[] parsed = currentStagePath.Split(parser);
+        currentStageName = parsed[parsed.Length - 2];
+        HandOverData.Stage = currentStageName;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(SceneName.inGameScene);
+    }
 
     // Save the level to a variable and file using FileBrowser and SaveLevelUsingPath
     private void SaveLevel()
@@ -1350,7 +1344,14 @@ public class LevelEditor : MonoBehaviour
         sData.triggerNum = triggerCount.ToArray();
         levelToSave = JsonUtility.ToJson(sData);
         // Open file browser to get the path and file name
-        OpenFileBrowser(FileBrowserMode.Save);
+        if (currentStagePath == null)
+        {
+            OpenFileBrowser(FileBrowserMode.Save);
+        }
+        else
+        {
+            SaveLevelUsingPath(currentStagePath);
+        }
     }
 
     // Save to a file using a path
@@ -1423,6 +1424,7 @@ public class LevelEditor : MonoBehaviour
             // We're done working with the file so we can close it
             file.Close();
             LoadLevelFromStringLayers(levelData);
+            currentStagePath = path;
         }
         else
         {
@@ -1458,18 +1460,18 @@ public class LevelEditor : MonoBehaviour
             {
                 for (int z = 0; z < LAYERS; z++)
                 {
-                    currentX = x;currentY = y;currentZ = z;
-                    
+                    currentX = x; currentY = y; currentZ = z;
+
                     previewStatus = sData.state[counter];
                     previewThreshold = sData.threshold[counter];
                     CreateBlock(sData.level[counter], x, y, z);
-                    if(gameObjects[x, y, z]!=null)
+                    if (gameObjects[x, y, z] != null)
                     {
-                    currentObj = gameObjects[x, y, z].GetComponent<InGameObject>();
-                    if (currentObj.GetType() == typeof(FlipButton) || currentObj.GetType().IsSubclassOf(typeof(FlipButton)))
-                    {
-                        AttachOperands();
-                    }
+                        currentObj = gameObjects[x, y, z].GetComponent<InGameObject>();
+                        if (currentObj.GetType() == typeof(FlipButton) || currentObj.GetType().IsSubclassOf(typeof(FlipButton)))
+                        {
+                            AttachOperands();
+                        }
                     }
                     counter++;
                 }
@@ -1477,24 +1479,6 @@ public class LevelEditor : MonoBehaviour
         }
        
         
-        UpdateLayerVisibility();
-    }
-
-    // Method that loads one layer
-    private void LoadLevelFromString(int layer, string content)
-    {
-        // Split our layer on rows by the new lines (\n)
-        List<string> lines = new List<string>(content.Split('\n'));
-        // Place each block in order in the correct x and y position
-        for (int i = 0; i < lines.Count; i++)
-        {
-            string[] blockIDs = lines[i].Split(',');
-            for (int j = 0; j < blockIDs.Length - 1; j++)
-            {
-                CreateBlock(int.Parse(blockIDs[j]), j, lines.Count - i - 1, layer);
-            }
-        }
-        // Update to only show the correct layer(s)
         UpdateLayerVisibility();
     }
 }
