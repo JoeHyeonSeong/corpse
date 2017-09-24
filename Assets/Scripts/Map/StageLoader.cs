@@ -36,7 +36,6 @@ public class StageLoader : MonoBehaviour {
 
     public GameObject LoadLevelUsingPath(string name)
     {
-        Debug.Log(name);
         // Enable the LevelEditor when the fileBrowser is done
         if (name.Length != 0)
         {
@@ -66,7 +65,9 @@ public class StageLoader : MonoBehaviour {
         if (tileLevelParent == null)
         {
             tileLevelParent = new GameObject("TileLevel");
-            tileLevelParent.AddComponent<StageInfo>();
+            StageInfo stageInfo=tileLevelParent.AddComponent<StageInfo>();
+            stageInfo.Title = title;
+            stageInfo.Life = life;
         }
         for (int i = 0; i < sData.triggerNum.Length; i++)
         {

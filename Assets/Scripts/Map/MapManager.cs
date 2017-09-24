@@ -6,7 +6,6 @@ public class MapManager : MonoBehaviour {
 
     public Position SpacePos { get { return new Position(100, 100); } }
 
-    GameObject currentMapPrefs;
     private GameObject currentMap;
     public GameObject CurrentMap { get { return currentMap; } }
     /// <summary>
@@ -21,8 +20,6 @@ public class MapManager : MonoBehaviour {
         }
     }
 
-    public GameObject makingMapPref;
-
     private void Start()
     {
         GenerateMap();
@@ -32,11 +29,9 @@ public class MapManager : MonoBehaviour {
     /// </summary>
     private void GenerateMap()
     {
-        HandOverData.Stagenum = 1;
         // currentMapPrefs=Resources.Load<GameObject>("Prefab/Map/Stage"+HandOverData.Stagenum.ToString());
-        currentMapPrefs = makingMapPref;
         //currentMap=Instantiate(currentMapPrefs);
-       currentMap = StageLoader.instance.LoadLevelUsingPath(HandOverData.Stage);
+        currentMap =StageLoader.instance.LoadLevelUsingPath(HandOverData.StageName);
         //set cam pos
 
         float minX = 999;

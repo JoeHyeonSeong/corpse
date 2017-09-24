@@ -5,13 +5,24 @@ using UnityEngine.UI;
 public class StageSelectButtonList : ScrollList {
     public void ListStages(int worldIndex)
     {
-        for (int i = 0; i < StageList.GetStageNo(worldIndex); i++)
+        Clear();
+
+        for (int i = 0; i < StageList.GetWorldSize(worldIndex); i++)
         {
             GameObject button=Instantiate(contentpref,transform);
-            int stageNum = i;
-            button.GetComponent<Button>().onClick.AddListener(() => MainManager.instance.GoToStage(stageNum));
-            button.transform.Find("Title").GetComponent<Text>().text = StageLoader.GetData(StageList.GetStageName(worldIndex, i)).title;
+            int stageIndex = i;
+            button.GetComponent<StageSelectButton>().SetInit(worldIndex, stageIndex);
+            button.transform.Find("Title").GetComponent<Text>().text = StageLoader.GetData(StageList.GetStageName(worldIndex, stageIndex)).title;
             InsertContent(false, button);
+        }
+    }
+
+    protected void Clear()
+    {
+        contentList.Clear();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
         }
     }
 }

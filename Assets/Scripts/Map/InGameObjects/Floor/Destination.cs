@@ -8,7 +8,7 @@ public class Destination : Floor {
     {
         if (who.GetType() == typeof(Character))
         {
-            Debug.Log("Clear");
+            InGameManager.instance.StageClear();
         }
     }
 }

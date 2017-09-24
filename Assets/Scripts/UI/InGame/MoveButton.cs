@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
+public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler,IDragHandler
 {
     Vector2 pressStartPos;
-    const float dragThreshold = 10f;
+    const float dragThreshold = 100f;
+    bool alreadyMove;
 
     public void OnPointerUp(PointerEventData data)
     {
-        if (Scheduler.instance.CurrentCycle != Scheduler.GameCycle.InputTime)
+        alreadyMove = false;
+    }
+
+    public void OnDrag(PointerEventData data)
+    {
+        if (Scheduler.instance.CurrentCycle != Scheduler.GameCycle.InputTime||alreadyMove)
         {
             //deny input
             return;
         }
+
         Position result;
         Vector2 resultVec = data.position - pressStartPos;
         if (resultVec.magnitude > dragThreshold)
@@ -42,6 +49,7 @@ public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
                 }
             }
             Move(result);
+            alreadyMove = true;
         }
     }
 

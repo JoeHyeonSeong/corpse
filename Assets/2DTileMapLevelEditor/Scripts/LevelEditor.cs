@@ -1313,7 +1313,9 @@ public class LevelEditor : MonoBehaviour
         char[] parser = new char[] { '/','\\', '.' };
         string[] parsed = currentStagePath.Split(parser);
         currentStageName = parsed[parsed.Length - 2];
-        HandOverData.Stage = currentStageName;
+        HandOverData.StageIndex = -1;
+        HandOverData.WorldIndex = -1;
+        HandOverData.StageName = currentStageName;
         UnityEngine.SceneManagement.SceneManager.LoadScene(SceneName.inGameScene);
     }
 
