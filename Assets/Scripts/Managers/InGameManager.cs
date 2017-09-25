@@ -10,6 +10,10 @@ public class InGameManager : MonoBehaviour {
         instance = this;
         PauseEnd();
         GameObject.Find("Fader").GetComponent<Fader>().FadeIn(0.2f);
+        if (HandOverData.WorldIndex != -1)
+        {
+            GameObject.Find("TestEndButton").SetActive(false);
+        }
     }
 
     public void NewPhase()
@@ -30,6 +34,11 @@ public class InGameManager : MonoBehaviour {
     {
         Debug.Log("Game Over");
         Restart();
+    }
+
+    public void GoToMapEdit()
+    {
+        SceneManager.LoadScene(SceneName.mapEdit);
     }
 
     public void Pause()

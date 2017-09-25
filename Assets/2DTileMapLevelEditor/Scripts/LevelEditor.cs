@@ -17,7 +17,6 @@ using UnityEngine.EventSystems;
 
 public class LevelEditor : MonoBehaviour
 {
-    private string currentStageName;
     private string currentStagePath;
     // The instance of the LevelEditor
     public static LevelEditor instance = null;
@@ -1311,8 +1310,13 @@ public class LevelEditor : MonoBehaviour
     private void Play()
     {
         char[] parser = new char[] { '/','\\', '.' };
+        Debug.Log(currentStagePath);
+        if (currentStagePath == null||currentStagePath=="")
+        {
+            return;
+        }
         string[] parsed = currentStagePath.Split(parser);
-        currentStageName = parsed[parsed.Length - 2];
+        string currentStageName = parsed[parsed.Length - 2];
         HandOverData.StageIndex = -1;
         HandOverData.WorldIndex = -1;
         HandOverData.StageName = currentStageName;
@@ -1359,6 +1363,7 @@ public class LevelEditor : MonoBehaviour
     // Save to a file using a path
     public void SaveLevelUsingPath(string path)
     {
+        currentStagePath = path;
         // Enable the LevelEditor when the fileBrowser is done
         ToggleLevelEditor(preFileBrowserState);
         if (path.Length != 0)

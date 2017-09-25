@@ -33,7 +33,7 @@ public class Fader : MonoBehaviour
             }
             GetComponent<Image>().color =
                 new Color(originCol.r, originCol.g, originCol.b, alpha);
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
     }
 }
