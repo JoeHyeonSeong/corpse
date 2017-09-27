@@ -14,7 +14,7 @@ public abstract class LoadedObject : InGameObject {
     public override void Teleport(Position des)
     {
         base.Teleport(des);
-        if (MapManager.instance != null)
+        if (InGameManager.IsInGameScene())
         {
             MapManager.instance.ResizeSideLasers(currentPos);
         }

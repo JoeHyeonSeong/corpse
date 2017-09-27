@@ -14,7 +14,7 @@ public class WallMakeFloor : Floor {
     protected override void Awake()
     {
         base.Awake();
-        if (MapManager.instance != null)
+        if (InGameManager.IsInGameScene())
         {
             myWall = Instantiate(Resources.Load<MakedWall>("Prefab/InGameObject/MakedWall"),
             transform.position, Quaternion.identity, transform.parent);
@@ -26,7 +26,7 @@ public class WallMakeFloor : Floor {
         if (myWall != null)
         {
             myWall.gameObject.SetActive(false);
-            if (MapManager.instance != null)
+            if (InGameManager.IsInGameScene())
             {
                 MapManager.instance.ResizeSideLasers(currentPos);
             }

@@ -13,9 +13,10 @@ public class Character : DestroyableObject
         {
             instance = this;
         }
-        if (MapManager.instance != null)
+        if (InGameManager.IsInGameScene())
         {
             life = StageInfo.instance.Life;
+            SetLifeText();
         }
     }
 
@@ -25,6 +26,7 @@ public class Character : DestroyableObject
     public override void Destroy()
     {
         life--;
+        SetLifeText();
         if (life > 0)
         {
             Revive();
@@ -69,6 +71,11 @@ public class Character : DestroyableObject
             flipX = false;
         }
         transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX = flipX;
+    }
+
+    private void SetLifeText()
+    {
+        GameObject.Find("LifeText").GetComponent<UnityEngine.UI.Text>().text = "×" + life;
     }
 }
 

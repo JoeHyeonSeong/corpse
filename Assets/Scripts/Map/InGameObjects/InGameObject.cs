@@ -41,14 +41,14 @@ public abstract class InGameObject : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        if (MapManager.instance != null)
+        if (InGameManager.IsInGameScene())
         {
             Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
         }
     }
     protected virtual void Start()
     {
-        if (MapManager.instance != null)
+        if (InGameManager.IsInGameScene())
         {
             ActivateCheck();
         }
@@ -136,7 +136,7 @@ public abstract class InGameObject : MonoBehaviour
 
     public void SetSortingOrder()
     {
-        if (MapManager.instance != null)
+        if (InGameManager.IsInGameScene())
         {
             if (transform.Find("Sprite") != null)
             {

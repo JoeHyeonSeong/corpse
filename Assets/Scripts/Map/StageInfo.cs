@@ -6,20 +6,30 @@ public class StageInfo : MonoBehaviour
 {
     [SerializeField]
     private int life;
-    public int Life { set { life = value; } get { return life; } }
+    public int Life {get { return life; } }
     [SerializeField]
     private string title;
-    public string Title { set { title = value; } }
     public static StageInfo instance;
+
     private void Awake()
     {
         instance = this;
     }
-    private void Start()
+
+    public void SetInitInfo(int life, string title)
     {
-        if (HandOverData.ShowStageInfo&&MapManager.instance!=null)
+        this.life = life;
+        this.title = title;
+        SetStageInfoUI();
+    }
+
+    private void SetStageInfoUI()
+    {
+        if (InGameManager.IsInGameScene())
         {
-            StageInfoManager.instance.ShowInfo(title, life);
+            GameObject.Find("Title").GetComponent<TextFader>().SetText(title);
+            GameObject.Find("Chapter").GetComponent<TextFader>().
+                SetText((InGameManager.instance.WorldIndex+1).ToString()+" - "+ (InGameManager.instance.StageIndex+1).ToString());
         }
     }
 }

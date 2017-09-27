@@ -316,8 +316,8 @@ public class LevelEditor : MonoBehaviour
 
     private void SetStageInfo()
     {
-        GameObject.Find("LifeInputField").GetComponent<InputField>().onValueChanged.AddListener(SetLife);
-        GameObject.Find("TitleInput").GetComponent<InputField>().onValueChanged.AddListener(SetTitle);
+        GameObject.Find("LifeInputField").GetComponent<InputField>().onEndEdit.AddListener(SetLife);
+        GameObject.Find("TitleInput").GetComponent<InputField>().onEndEdit.AddListener(SetTitle);
     }
 
     private void SetLife(string num)
@@ -325,8 +325,6 @@ public class LevelEditor : MonoBehaviour
         try
         {
             life = System.Int32.Parse(num);
-            tileLevelParent.GetComponent<StageInfo>().Life = life;
-            Debug.Log(life);
         }
         catch
         {
@@ -337,8 +335,8 @@ public class LevelEditor : MonoBehaviour
     private void SetTitle(string title)
     {
         this.title = title;
-        tileLevelParent.GetComponent<StageInfo>().Title = title;
     }
+
     private void SetupObjectInfo()
     {
         // Hook up SaveLevel method to SaveButton

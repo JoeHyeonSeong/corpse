@@ -20,14 +20,10 @@ public class MapManager : MonoBehaviour {
         }
     }
 
-    private void Start()
-    {
-        GenerateMap();
-    }
     /// <summary>
     /// generate new map using prefab
     /// </summary>
-    private void GenerateMap()
+    public void GenerateMap()
     {
         // currentMapPrefs=Resources.Load<GameObject>("Prefab/Map/Stage"+HandOverData.Stagenum.ToString());
         //currentMap=Instantiate(currentMapPrefs);

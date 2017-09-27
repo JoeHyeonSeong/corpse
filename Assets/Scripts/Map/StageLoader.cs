@@ -66,8 +66,7 @@ public class StageLoader : MonoBehaviour {
         {
             tileLevelParent = new GameObject("TileLevel");
             StageInfo stageInfo=tileLevelParent.AddComponent<StageInfo>();
-            stageInfo.Title = title;
-            stageInfo.Life = life;
+            stageInfo.SetInitInfo(life, title);
         }
         for (int i = 0; i < sData.triggerNum.Length; i++)
         {

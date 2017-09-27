@@ -15,7 +15,7 @@ public class LaserWall : Wall
     protected override void Awake()
     {
         base.Awake();
-        if (MapManager.instance != null)
+        if (InGameManager.IsInGameScene())
         {
             MakeLaser();
         }
