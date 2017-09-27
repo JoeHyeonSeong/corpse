@@ -3,21 +3,97 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CamCtrl : MonoBehaviour {
+    private const float maxCamSize = 10f;
+    private const float minCamSize= 7f;
+    private const float maxMoveTime = 1f;
+    private const float minMoveTime = 0.2f;
+    private const float zoomMoveTime=0.05f;
+    private const float maxInterval = 0.1f;
     public static CamCtrl instance;
 
-    private float maxInterval = 0.1f;
-    private float movTime = 0.4f;
+    private float maxX;
+    private float maxY;
+    private float minX;
+    private float minY;
+
+    private bool ignoreThreshold;
+    private bool isZoomIn;
+
+    private float movTime=1f;
     private const int zPos = -10;
+    private Camera myCam;
+
+    private Vector3 defaultPosition;
     private Vector3 targetPos;
+    public Vector3 TargetPos
+    {
+        set
+        {
+            targetPos = value;
+            targetPos.z = zPos;
+        }
+    }
+
     private void Awake()
     {
         instance = this;
+        myCam = GetComponent<Camera>();
+        myCam.orthographicSize = maxCamSize;
     }
 
+    public void SetThresholdPos(float mapMaxX, float mapMaxY, float mapMinX, float mapMinY)
+    {
+        float ySize = myCam.orthographicSize;
+        float xSize = ySize * myCam.pixelWidth/myCam.pixelHeight;
+        maxX = mapMinX + xSize;
+        maxY = mapMinY + ySize;
+        minX = mapMaxX - xSize;
+        minY = mapMaxY - ySize;
+        defaultPosition = new Vector3((mapMaxX + mapMinX) / 2, (mapMaxY + mapMinY) / 2, zPos);
+    }
 
     public void SetPosition(Vector2 pos)
     {
         transform.position = new Vector3(pos.x, pos.y, zPos);
+    }
+
+    public void Zoom(float time, bool zoomIn)
+    {
+        if (zoomIn)
+        {
+            isZoomIn = true;
+        }
+        ignoreThreshold = true;
+        StartCoroutine(ZoomCoroutine(time, zoomIn));
+    }
+
+    private IEnumerator ZoomCoroutine(float time, bool zoomIn)
+    {
+        float deltaSize = (maxCamSize - minCamSize) / time*Time.deltaTime;
+        float accTime=0;
+        while (accTime < time)
+        {
+            if (zoomIn)
+            {
+                myCam.orthographicSize -= deltaSize;
+            }
+            else
+            {
+                myCam.orthographicSize +=deltaSize;
+            }
+            accTime += Time.deltaTime;
+            yield return null;
+        }
+        if (zoomIn)
+        {
+            myCam.orthographicSize =minCamSize;
+        }
+        else
+        {
+            myCam.orthographicSize=maxCamSize;
+        }
+        ignoreThreshold = false;
+        isZoomIn = false;
     }
 
     private void FixedUpdate()
@@ -25,18 +101,36 @@ public class CamCtrl : MonoBehaviour {
         CamMovRoutine();
     }
 
-
+    
     private void CamMovRoutine()
     {
         //cam moving routine
         Vector3 moveVel=Vector3.zero;
-        Vector3 charPos= Character.instance.CurrentPos.ToVector3();
-        charPos.z =zPos;
-        if ((charPos - transform.position).magnitude > maxInterval)
+        TargetPos = Character.instance.CurrentPos.ToVector3();
+        float diff = (targetPos - transform.position).magnitude;
+        if (diff > maxInterval)
         {
-            this.transform.position = Vector3.SmoothDamp(this.transform.position, charPos, ref moveVel, movTime);
+            float expectMovTime = 0.5f/diff;
+            //set movTime
+            if (isZoomIn)
+            {
+                movTime = zoomMoveTime;
+            }
+            else
+            {
+                movTime = Mathf.Clamp(expectMovTime, minMoveTime, maxMoveTime);
+            }
+            //calculate Position
+            Vector3 expectPos = Vector3.SmoothDamp(this.transform.position, targetPos, ref moveVel, movTime);
+            if (ignoreThreshold||(expectPos.x > minX && expectPos.x < maxX && expectPos.y < maxY && expectPos.y > minY))
+            {
+                transform.position = expectPos;
+            }
+            else
+            {
+               transform.position= Vector3.SmoothDamp(this.transform.position,defaultPosition, ref moveVel, movTime);
+            }
         }
-        
 
     }
 }

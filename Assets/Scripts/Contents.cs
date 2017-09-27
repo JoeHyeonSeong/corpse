@@ -76,7 +76,7 @@ public static class StageList
     //각각의 월드에 스테이지가 몇개인지
     private static int[] StageNo = new int[] { 2, 3, 4 };
     private static string[,] stageList = new string[,] {
-        {"Level","Level2",null,null },//world0
+        {"Level","js2",null,null },//world0
         {"Level","Level","Level",null },//world1
         {"Level","Level","Level","Level" }//world2
     };

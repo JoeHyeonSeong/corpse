@@ -5,7 +5,14 @@ using UnityEngine;
 
 public class Character : DestroyableObject
 {
+
+    private int life;
+    private Stack<int> lifeStack = new Stack<int>();
+
+    private float respawnDelay=1f;
+
     public static Character instance;
+
     protected override void Awake()
     {
         base.Awake();
@@ -20,7 +27,6 @@ public class Character : DestroyableObject
         }
     }
 
-    private int life;
 
 
     public override void Destroy()
@@ -50,12 +56,28 @@ public class Character : DestroyableObject
         //gen point 에서 다시 살아남
         Position lastPos = currentPos;
         Ice underIce = (Ice)MapManager.instance.Find(typeof(Ice), currentPos);
-        Teleport(GenPoint.ActivatingGenPoint.CurrentPos);
         if (isMoving && underIce != null)
         {
             StopCoroutine(MoveCoroutine());
             mycorpse.GetComponent<Corpse>().Slide(lastPos + moveDir, true);
         }
+        Respawn();
+    }
+
+    private void Respawn()
+    {
+        StartCoroutine(RespawnWaitDelay());
+    }
+
+    private IEnumerator RespawnWaitDelay()
+    {
+        CamCtrl.instance.Zoom(0.3f, true);
+        Scheduler.instance.MoveReport(this);
+        yield return new WaitForSeconds(respawnDelay);
+        Teleport(GenPoint.ActivatingGenPoint.CurrentPos);
+        Scheduler.instance.StopReport(this);
+        yield return new WaitForSeconds(1);
+        CamCtrl.instance.Zoom(2f, false);
     }
 
     public override void Move(Position destination,  bool anim)
@@ -76,6 +98,21 @@ public class Character : DestroyableObject
     private void SetLifeText()
     {
         GameObject.Find("LifeText").GetComponent<UnityEngine.UI.Text>().text = "×" + life;
+    }
+
+
+
+    public override void SaveHistory()
+    {
+        base.SaveHistory();
+        lifeStack.Push(life);
+    }
+
+    public override void RollBack()
+    {
+        base.RollBack();
+        life = lifeStack.Pop();
+        SetLifeText();
     }
 }
 

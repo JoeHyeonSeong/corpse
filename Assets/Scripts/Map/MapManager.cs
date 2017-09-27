@@ -48,6 +48,7 @@ public class MapManager : MonoBehaviour {
             }
         }
         CamCtrl.instance.SetPosition(new Vector2((minX + maxX) / 2, (minY + maxY) / 2));
+        CamCtrl.instance.SetThresholdPos(maxX, maxY, minX, minY);
     }
 
     /// <summary>

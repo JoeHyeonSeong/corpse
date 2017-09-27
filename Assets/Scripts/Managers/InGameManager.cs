@@ -12,7 +12,6 @@ public class InGameManager : MonoBehaviour {
 
     void Awake()
     {
-        PlayerPrefs.DeleteAll();
         worldIndex = HandOverData.WorldIndex;
         stageIndex = HandOverData.StageIndex;
         instance = this;
@@ -58,6 +57,15 @@ public class InGameManager : MonoBehaviour {
             fadeTime = 0.5f;
         }
         Invoke("FadeIn",fadeTime);
+    }
+
+    /// <summary>
+    /// 현재 씬이 인게임인지 확인함
+    /// </summary>
+    /// <returns></returns>
+    static public bool IsInGameScene()
+    {
+        return SceneManager.GetActiveScene().name == SceneName.inGameScene;
     }
 
     /// <summary>
@@ -135,12 +143,13 @@ public class InGameManager : MonoBehaviour {
         }
     }
 
+
     /// <summary>
     /// 점점 어두어지다가 씬이 바뀜
     /// </summary>
     /// <param name="sceneName"></param>
     /// <returns></returns>
-    IEnumerator ChangeScene(string sceneName)
+    private IEnumerator ChangeScene(string sceneName)
     {
         const float changeTime = 0.3f;
         GameObject.Find("Fader").GetComponent<ImageFader>().FadeOut(changeTime);
@@ -157,15 +166,6 @@ public class InGameManager : MonoBehaviour {
         {
             GameObject.Find("TestEndButton").SetActive(false);
         }
-    }
-
-    /// <summary>
-    /// 현재 씬이 인게임인지 확인함
-    /// </summary>
-    /// <returns></returns>
-    static public bool IsInGameScene()
-    {
-        return SceneManager.GetActiveScene().name==SceneName.inGameScene;
     }
 
     /// <summary>

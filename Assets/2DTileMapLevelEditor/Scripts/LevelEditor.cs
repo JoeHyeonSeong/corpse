@@ -1308,7 +1308,6 @@ public class LevelEditor : MonoBehaviour
     private void Play()
     {
         char[] parser = new char[] { '/','\\', '.' };
-        Debug.Log(currentStagePath);
         if (currentStagePath == null||currentStagePath=="")
         {
             return;
