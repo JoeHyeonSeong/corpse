@@ -5,10 +5,12 @@ using UnityEngine;
 public class CamCtrl : MonoBehaviour {
     private const float maxCamSize = 10f;
     private const float minCamSize= 7f;
-    private const float maxMoveTime = 1f;
-    private const float minMoveTime = 0.2f;
-    private const float zoomMoveTime=0.05f;
+    private const float maxMoveTime = 0.15f;
+    private const float minMoveTime = 0.1f;
+    private const float zoomMoveTime=0.1f;
     private const float maxInterval = 0.1f;
+    private const float sideInterval = 0.6f;
+    private const int zPos = -10;
     public static CamCtrl instance;
 
     private float maxX;
@@ -16,14 +18,10 @@ public class CamCtrl : MonoBehaviour {
     private float minX;
     private float minY;
 
-    private bool ignoreThreshold;
     private bool isZoomIn;
 
-    private float movTime=1f;
-    private const int zPos = -10;
     private Camera myCam;
 
-    private Vector3 defaultPosition;
     private Vector3 targetPos;
     public Vector3 TargetPos
     {
@@ -43,13 +41,12 @@ public class CamCtrl : MonoBehaviour {
 
     public void SetThresholdPos(float mapMaxX, float mapMaxY, float mapMinX, float mapMinY)
     {
-        float ySize = myCam.orthographicSize;
-        float xSize = ySize * myCam.pixelWidth/myCam.pixelHeight;
+        float ySize = myCam.orthographicSize-sideInterval;
+        float xSize = ySize * myCam.pixelWidth/myCam.pixelHeight-sideInterval;
         maxX = mapMinX + xSize;
         maxY = mapMinY + ySize;
         minX = mapMaxX - xSize;
         minY = mapMaxY - ySize;
-        defaultPosition = new Vector3((mapMaxX + mapMinX) / 2, (mapMaxY + mapMinY) / 2, zPos);
     }
 
     public void SetPosition(Vector2 pos)
@@ -63,7 +60,10 @@ public class CamCtrl : MonoBehaviour {
         {
             isZoomIn = true;
         }
-        ignoreThreshold = true;
+        else
+        {
+            isZoomIn = false;
+        }
         StartCoroutine(ZoomCoroutine(time, zoomIn));
     }
 
@@ -92,8 +92,6 @@ public class CamCtrl : MonoBehaviour {
         {
             myCam.orthographicSize=maxCamSize;
         }
-        ignoreThreshold = false;
-        isZoomIn = false;
     }
 
     private void FixedUpdate()
@@ -101,7 +99,6 @@ public class CamCtrl : MonoBehaviour {
         CamMovRoutine();
     }
 
-    
     private void CamMovRoutine()
     {
         //cam moving routine
@@ -112,6 +109,7 @@ public class CamCtrl : MonoBehaviour {
         {
             float expectMovTime = 0.5f/diff;
             //set movTime
+            float movTime;
             if (isZoomIn)
             {
                 movTime = zoomMoveTime;
@@ -121,14 +119,17 @@ public class CamCtrl : MonoBehaviour {
                 movTime = Mathf.Clamp(expectMovTime, minMoveTime, maxMoveTime);
             }
             //calculate Position
-            Vector3 expectPos = Vector3.SmoothDamp(this.transform.position, targetPos, ref moveVel, movTime);
-            if (ignoreThreshold||(expectPos.x > minX && expectPos.x < maxX && expectPos.y < maxY && expectPos.y > minY))
+            Vector3 expectPos = Vector3.SmoothDamp(this.transform.position, targetPos,ref moveVel,  movTime);
+            if (isZoomIn)
             {
                 transform.position = expectPos;
             }
             else
             {
-               transform.position= Vector3.SmoothDamp(this.transform.position,defaultPosition, ref moveVel, movTime);
+                movTime = zoomMoveTime;
+                expectPos.x = Mathf.Clamp(expectPos.x, minX, maxX);
+                expectPos.y = Mathf.Clamp(expectPos.y, minY, maxY);
+                transform.position = Vector3.Lerp(transform.position, expectPos, movTime);
             }
         }
 

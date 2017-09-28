@@ -9,7 +9,7 @@ public static class HandOverData {
     static private bool showStageInfo=true;
     static public bool ShowStageInfo { get { return showStageInfo; } set { showStageInfo = value; } }
 
-    static private string stageName="Level";
+    static private string stageName="js1";
     static public string StageName { get { return stageName; } set { stageName = value; } }
 
     static public bool gameInit = false;

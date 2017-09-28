@@ -29,9 +29,9 @@ public class LevelEditor : MonoBehaviour
     const int EMPTY = -1;
 
     // The X,Y and Z value of the map
-    public int HEIGHT = 14;
-    public int WIDTH = 16;
-    public int LAYERS = 10;
+    private int HEIGHT = 18;
+    private int WIDTH = 10;
+    private int LAYERS = 10;
 
     // The internal representation of the level (int values) and gameObjects (transforms)
     private InGameObject.ActiveStatus[,,] status;
@@ -956,7 +956,9 @@ public class LevelEditor : MonoBehaviour
                 }
                 else//add trigger
                 {
-                    if (!currentTrigger.Contains(new Vector3(posX, posY, selectedLayer)))
+                    if (!currentTrigger.Contains(new Vector3(posX, posY, selectedLayer))&&
+                        gameObjects[posX,posY,selectedLayer].GetComponent<InGameObject>().
+                        CurrentStatus!=InGameObject.ActiveStatus.non_activatable)
                         {
                         currentTrigger.Add(new Vector3(posX, posY, selectedLayer));
                         ShowTrigger();
@@ -1469,6 +1471,17 @@ public class LevelEditor : MonoBehaviour
                     previewStatus = sData.state[counter];
                     previewThreshold = sData.threshold[counter];
                     CreateBlock(sData.level[counter], x, y, z);
+                    counter++;
+                }
+            }
+        }
+        for (int x = 0; x < WIDTH; x++)
+        {
+            for (int y = 0; y < HEIGHT; y++)
+            {
+                for (int z = 0; z < LAYERS; z++)
+                {
+                    currentX = x; currentY = y; currentZ = z;
                     if (gameObjects[x, y, z] != null)
                     {
                         currentObj = gameObjects[x, y, z].GetComponent<InGameObject>();
@@ -1481,8 +1494,7 @@ public class LevelEditor : MonoBehaviour
                 }
             }
         }
-       
-        
+
         UpdateLayerVisibility();
     }
 }

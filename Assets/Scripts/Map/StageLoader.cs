@@ -91,9 +91,21 @@ public class StageLoader : MonoBehaviour {
                     previewThreshold = sData.threshold[counter];
                   Transform obj= CreateBlock(sData.level[counter], x, y, z);
                     gameObjects[x, y, z] = obj;
+                    counter++;
+                }
+            }
+        }
+        for (int x = 0; x < WIDTH; x++)
+        {
+            for (int y = 0; y < HEIGHT; y++)
+            {
+                for (int z = 0; z < LAYERS; z++)
+                {
+                    currentX = x; currentY = y; currentZ = z;
+                    Transform obj=gameObjects[x, y, z];
                     if (obj != null)
                     {
-                        currentObj =obj.GetComponent<InGameObject>();
+                        currentObj = obj.GetComponent<InGameObject>();
                         if (currentObj.GetType() == typeof(FlipButton) || currentObj.GetType().IsSubclassOf(typeof(FlipButton)))
                         {
                             AttachOperands();

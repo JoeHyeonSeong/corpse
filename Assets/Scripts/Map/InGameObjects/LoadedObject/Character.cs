@@ -9,8 +9,6 @@ public class Character : DestroyableObject
     private int life;
     private Stack<int> lifeStack = new Stack<int>();
 
-    private float respawnDelay=1f;
-
     public static Character instance;
 
     protected override void Awake()
@@ -56,28 +54,28 @@ public class Character : DestroyableObject
         //gen point 에서 다시 살아남
         Position lastPos = currentPos;
         Ice underIce = (Ice)MapManager.instance.Find(typeof(Ice), currentPos);
+        Respawn();
         if (isMoving && underIce != null)
         {
             StopCoroutine(MoveCoroutine());
             mycorpse.GetComponent<Corpse>().Slide(lastPos + moveDir, true);
         }
-        Respawn();
     }
 
     private void Respawn()
     {
-        StartCoroutine(RespawnWaitDelay());
+        Teleport(GenPoint.ActivatingGenPoint.CurrentPos);
+        StartCoroutine(RespawnAnimation());
     }
 
-    private IEnumerator RespawnWaitDelay()
+    private IEnumerator RespawnAnimation()
     {
-        CamCtrl.instance.Zoom(0.3f, true);
+        
         Scheduler.instance.MoveReport(this);
-        yield return new WaitForSeconds(respawnDelay);
-        Teleport(GenPoint.ActivatingGenPoint.CurrentPos);
-        Scheduler.instance.StopReport(this);
+        //respawn animation
         yield return new WaitForSeconds(1);
-        CamCtrl.instance.Zoom(2f, false);
+        Scheduler.instance.StopReport(this);
+
     }
 
     public override void Move(Position destination,  bool anim)
@@ -99,8 +97,6 @@ public class Character : DestroyableObject
     {
         GameObject.Find("LifeText").GetComponent<UnityEngine.UI.Text>().text = "×" + life;
     }
-
-
 
     public override void SaveHistory()
     {
