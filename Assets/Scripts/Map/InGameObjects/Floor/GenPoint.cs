@@ -10,6 +10,7 @@ public class GenPoint :Floor {
     protected override void Awake()
     {
         base.Awake();
+        stepPriority = 0;
     }
 
 

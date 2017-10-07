@@ -14,6 +14,7 @@ public class WallMakeFloor : Floor {
     protected override void Awake()
     {
         base.Awake();
+        stepPriority = 1;
         if (InGameManager.IsInGameScene())
         {
             myWall = Instantiate(Resources.Load<MakedWall>("Prefab/InGameObject/MakedWall"),

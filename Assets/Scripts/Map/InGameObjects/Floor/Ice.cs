@@ -7,6 +7,7 @@ public class Ice : Floor
     protected override void Awake()
     {
         base.Awake();
+        stepPriority = 2;
     }
 
 

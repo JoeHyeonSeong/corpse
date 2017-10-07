@@ -8,6 +8,7 @@ public class Spine : Floor {
     protected override void Awake()
     {
         base.Awake();
+        stepPriority = 3;
         if (spineOn == null)
         {
             spineOn = Resources.Load<Sprite>("Graphic/InGameObject/spineOn");

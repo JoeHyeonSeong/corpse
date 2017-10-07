@@ -137,14 +137,27 @@ public class MovableObject : LoadedObject
 
     protected void StepCheck()
     {
-        List<InGameObject> currentBlockData = MapManager.instance.BlockData(currentPos);
-        //step
+        Position stepPos = currentPos;
+        List<InGameObject> currentBlockData = MapManager.instance.BlockData(stepPos);
+        List<Floor> currentFloor = new List<Floor>();
+        //floor만 고르기
         foreach (InGameObject obj in currentBlockData)
         {
             if (obj.GetType().IsSubclassOf(typeof(Floor)) || obj.GetType() == typeof(Floor))
             {
-                ((Floor)obj).Step(this);
+                currentFloor.Add((Floor)obj);
             }
+        }
+        //priority로 sorting
+        currentFloor.Sort();
+        //step
+        foreach (Floor fl in currentFloor)
+        {
+            if (stepPos != currentPos)
+            {
+                break;
+            }
+            fl.Step(this);
         }
     }
 

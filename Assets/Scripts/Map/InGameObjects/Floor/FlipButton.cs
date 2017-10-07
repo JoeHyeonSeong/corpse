@@ -6,7 +6,10 @@ public class FlipButton : Floor {
     protected override void Awake()
     {
         base.Awake();
+        stepPriority = 1;
     }
+
+
     [SerializeField]
     protected List<InGameObject> operands;
     public List<InGameObject> Operands { set { operands = value; }}

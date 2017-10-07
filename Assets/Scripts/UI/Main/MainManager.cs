@@ -19,7 +19,7 @@ public class MainManager : MonoBehaviour
 
     private void Awake()
     {
-        Screen.SetResolution(540, 960, true);
+        //Screen.SetResolution(540, 960, true);
         if (instance == null)
         {
             instance = this;

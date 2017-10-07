@@ -5,6 +5,14 @@ using UnityEngine;
 public class DisposableButton : FlipButton {
     Stack<bool> neverUseStack = new Stack<bool>();
     bool neverUsed = true;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        stepPriority = 1;
+    }
+
+
     public override void Step(MovableObject who)
     {
         if (neverUsed)

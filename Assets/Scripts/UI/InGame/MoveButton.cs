@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler,IDragHandler
 {
     Vector2 pressStartPos;
-    const float dragThreshold = 100f;
+    const float dragThreshold = 50f;
     bool alreadyMove;
 
     public void OnPointerUp(PointerEventData data)
