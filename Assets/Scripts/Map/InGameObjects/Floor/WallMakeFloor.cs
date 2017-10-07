@@ -25,7 +25,7 @@ public class WallMakeFloor : Floor {
         base.Deactivate();
         if (myWall != null)
         {
-            myWall.gameObject.SetActive(false);
+            myWall.Sink();
             if (InGameManager.IsInGameScene())
             {
                 MapManager.instance.ResizeSideLasers(currentPos);
@@ -62,8 +62,7 @@ public class WallMakeFloor : Floor {
         }
         if (somethingIsOnMe == false)
         {
-
-            myWall.gameObject.SetActive(true);
+            myWall.Rise();
         }
     }
 }

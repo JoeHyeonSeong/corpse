@@ -74,11 +74,11 @@ public static class StageList
     private static bool[] lockInfo;
 
     //각각의 월드에 스테이지가 몇개인지
-    private static int[] StageNo = new int[] { 2, 3, 4 };
+    private static int[] StageNo = new int[] { 8, 8, 8 };
     private static string[,] stageList = new string[,] {
-        {"js1","js2",null,null },//world0
-        {"js1","Level","Level",null },//world1
-        {"Level","Level","Level","Level" }//world2
+        {"jslevel1","jslevel2","jslevel3","jslevel4","jslevel5","jslevel6","Level","Level"},//world0
+        {"js1","Level","Level","Level","Level","Level","Level","Level" },//world1
+        {"Level","Level","Level","Level","Level","Level","Level","Level" }//world2
     };
 
     public static string GetStageName(int world, int stage)

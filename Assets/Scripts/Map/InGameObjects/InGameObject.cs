@@ -16,14 +16,15 @@ public abstract class InGameObject : MonoBehaviour
     private int activateThreshold;
     public int ActivateThreshold { set { activateThreshold = value; } }
     Stack<History> myHistory = new Stack<History>();
-    /// <summary>
-    /// current position of gameObject
-    /// </summary>
+
+
     protected Position currentPos;
     /// <summary>
     /// return current position of game Object(read only)
     /// </summary>
     public Position CurrentPos { get { return currentPos; } }
+
+
     [SerializeField]
     /// <summary>
     /// if can't activate-> non_activatable else if activated->activating else->deactivating
@@ -31,12 +32,17 @@ public abstract class InGameObject : MonoBehaviour
     protected ActiveStatus currentStatus;
     public ActiveStatus CurrentStatus
     { get { return currentStatus; }set { currentStatus = value; } }
+
+    protected Transform mygraphic;
+
+
     protected virtual void Awake()
     {
         if (GetComponent<SpriteRenderer>() != null)
         {
             GetComponent<SpriteRenderer>().enabled = false;
         }
+        mygraphic = transform.Find("Sprite");
     }
 
     protected virtual void OnEnable()
@@ -134,7 +140,7 @@ public abstract class InGameObject : MonoBehaviour
         }
     }
 
-    public void SetSortingOrder()
+    public virtual void SetSortingOrder()
     {
         if (InGameManager.IsInGameScene())
         {

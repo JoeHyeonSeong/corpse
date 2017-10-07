@@ -79,6 +79,7 @@ public class StageLoader : MonoBehaviour {
             triggers.Add(temp);
         }
         counter = 0;
+        //set gameobject array
         for (int x = 0; x < WIDTH; x++)
         {
             for (int y = 0; y < HEIGHT; y++)
@@ -95,6 +96,7 @@ public class StageLoader : MonoBehaviour {
                 }
             }
         }
+        //set triggers
         for (int x = 0; x < WIDTH; x++)
         {
             for (int y = 0; y < HEIGHT; y++)

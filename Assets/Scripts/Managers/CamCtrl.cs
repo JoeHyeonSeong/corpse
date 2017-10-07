@@ -11,6 +11,7 @@ public class CamCtrl : MonoBehaviour {
     private const float maxInterval = 0.1f;
     private const float sideInterval = 0.6f;
     private const int zPos = -10;
+    private readonly Vector3 camPosAdjust = new Vector3(0, 4,0);
     public static CamCtrl instance;
 
     private float maxX;
@@ -103,7 +104,7 @@ public class CamCtrl : MonoBehaviour {
     {
         //cam moving routine
         Vector3 moveVel=Vector3.zero;
-        TargetPos = Character.instance.CurrentPos.ToVector3();
+        TargetPos = Character.instance.CurrentPos.ToVector3()+camPosAdjust;
         float diff = (targetPos - transform.position).magnitude;
         if (diff > maxInterval)
         {

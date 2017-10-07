@@ -10,6 +10,8 @@ public class MainManager : MonoBehaviour
     private ViewController optionCon;
     private ViewController currentCon;
 
+    private GameObject backButton;
+
     public enum View { Start, WorldSelect, StageSelect, Option };
     private View currentView;
     public static MainManager instance;
@@ -17,39 +19,52 @@ public class MainManager : MonoBehaviour
 
     private void Awake()
     {
+        Screen.SetResolution(540, 960, true);
         if (instance == null)
         {
             instance = this;
         }
         else
         {
-         Destroy(this.gameObject);
+            Destroy(this.gameObject);
         }
-        SetControllers();
+        SetInitInfo();
     }
 
     /// <summary>
     /// controller들 설정해줌
     /// </summary>
-    private void SetControllers()
+    private void SetInitInfo()
     {
-        startCon=GameObject.Find("Start").GetComponent<ViewController>();
+        startCon = GameObject.Find("Start").GetComponent<ViewController>();
         worldSelectCon = GameObject.Find("WorldSelect").GetComponent<ViewController>();
         stageSelectCon = GameObject.Find("StageSelect").GetComponent<ViewController>();
         optionCon = GameObject.Find("Option").GetComponent<ViewController>();
+        backButton = GameObject.Find("BackButton");
     }
 
     private void Start()
     {
-        if (HandOverData.gameInit == false)
+        switch (HandOverData.mainView)
         {
-            GoToStart();
-            HandOverData.gameInit = true;
+            case View.Start:
+                GoToStart();
+                break;
+            case View.WorldSelect:
+                GoToWorldSelect();
+                break;
+            case View.StageSelect:
+                int worldIndex = (HandOverData.WorldIndex == -1) ? PlayerPrefs.GetInt(PrefsKey.lastWorld) : HandOverData.WorldIndex;
+                GoToStageSelect(worldIndex);
+                break;
         }
-        else
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            int worldIndex= (HandOverData.WorldIndex == -1) ? PlayerPrefs.GetInt(PrefsKey.lastWorld) : HandOverData.WorldIndex;
-            GoToStageSelect(worldIndex);
+            GoToBack();
         }
     }
 
@@ -78,6 +93,7 @@ public class MainManager : MonoBehaviour
         switch (currentView)
         {
             case View.Start:
+                Application.Quit();
                 break;
             case View.WorldSelect:
                 GoToStart();
@@ -98,7 +114,7 @@ public class MainManager : MonoBehaviour
     /// 해당 view로 이동
     /// </summary>
     /// <param name="view"></param>
-    public void SetCurrentDat(View view,ViewController currentCon)
+    public void SetCurrentDat(View view, ViewController currentCon)
     {
         //현재 켜져있는거 닫음
         if (this.currentCon)
@@ -112,20 +128,23 @@ public class MainManager : MonoBehaviour
 
     public void GoToStageSelect(int worldIndex)
     {
-        SetCurrentDat(View.StageSelect,stageSelectCon);
+        SetCurrentDat(View.StageSelect, stageSelectCon);
         ((StageSelectController)stageSelectCon).Open(worldIndex);
     }
 
     public void GoToStart()
     {
+
         SetCurrentDat(View.Start, startCon);
         startCon.Open();
+        backButton.SetActive(false);
     }
 
     public void GoToWorldSelect()
     {
         SetCurrentDat(View.WorldSelect, worldSelectCon);
         worldSelectCon.Open();
+        backButton.SetActive(true);
     }
 
     public void GoToOption()

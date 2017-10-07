@@ -71,10 +71,10 @@ public class Character : DestroyableObject
     private IEnumerator RespawnAnimation()
     {
         
-        Scheduler.instance.MoveReport(this);
+       // Scheduler.instance.MoveReport(this);
         //respawn animation
         yield return new WaitForSeconds(1);
-        Scheduler.instance.StopReport(this);
+        //Scheduler.instance.StopReport(this);
 
     }
 
@@ -107,8 +107,11 @@ public class Character : DestroyableObject
     public override void RollBack()
     {
         base.RollBack();
-        life = lifeStack.Pop();
-        SetLifeText();
+        if (lifeStack.Count > 0)
+        {
+            life = lifeStack.Pop();
+            SetLifeText();
+        }
     }
 }
 

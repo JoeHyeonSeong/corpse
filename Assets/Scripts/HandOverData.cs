@@ -12,6 +12,6 @@ public static class HandOverData {
     static private string stageName="js1";
     static public string StageName { get { return stageName; } set { stageName = value; } }
 
-    static public bool gameInit = false;
-    static public bool GameInit { get { return gameInit; } set { gameInit = value; } }
+    static public MainManager.View mainView = MainManager.View.Start;
+    static public MainManager.View GameInit { get { return mainView; } set { mainView = value; } }
 }

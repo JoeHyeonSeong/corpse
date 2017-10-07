@@ -41,12 +41,11 @@ public class Laser : InGameObject
         {
             InGameObject temp = hits[i].transform.GetComponent<InGameObject>();
             if (temp.GetType().IsSubclassOf(typeof(LoadedObject))
-                &&temp.GetType()!=typeof(LaserWall))
+                &&temp.CurrentPos!=currentPos)
             {
                 if (temp.GetType().IsSubclassOf(typeof(DestroyableObject)))
                 {
                     ((DestroyableObject)temp).Destroy();
-                    Resize();
                     return;
                 }
                 else
@@ -61,7 +60,6 @@ public class Laser : InGameObject
         {
             tempEndPos = currentPos + Direction.Dir4ToPos(dir) * maxLength;
         }
-        transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = (tempEndPos.Y<currentPos.Y)?-tempEndPos.Y*10-1:-currentPos.Y*10-1;
 
         endPos = tempEndPos;
         Position laserPos = tempEndPos - currentPos;
@@ -73,6 +71,7 @@ public class Laser : InGameObject
         {
             laserLength = laserPos.Y;
         }
+        SetSortingOrder();
         SetLaserShape();
     }
 
@@ -114,5 +113,14 @@ public class Laser : InGameObject
                 Debug.Log("오류");
                 break;
         }
+    }
+    public override void SetSortingOrder()
+    {
+        base.SetSortingOrder();
+        if (endPos == null)
+        {
+            endPos = currentPos;
+        }
+        mygraphic.GetComponent<SpriteRenderer>().sortingOrder = (endPos.Y < currentPos.Y) ? -endPos.Y * 10 - 1 : -currentPos.Y * 10 - 1;
     }
 }

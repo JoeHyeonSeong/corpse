@@ -10,7 +10,9 @@ public class InGameManager : MonoBehaviour {
     private int stageIndex;
     public int StageIndex { get { return stageIndex;}}
 
-    void Awake()
+    private const float restartWaitTime = 0.2f;
+    private const float exitWaitTime = 1f;
+    private void Awake()
     {
         worldIndex = HandOverData.WorldIndex;
         stageIndex = HandOverData.StageIndex;
@@ -90,7 +92,10 @@ public class InGameManager : MonoBehaviour {
     /// </summary>
     public void Pause()
     {
-        GameObject.Find("Pause").GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
+        GameObject pause=GameObject.Find("Pause");
+        pause.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
+        pause.transform.Find("ExitButton").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => Exit(MainManager.View.StageSelect));
+        pause.transform.Find("RestartButton").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => Restart());
     }
 
     /// <summary>
@@ -104,9 +109,10 @@ public class InGameManager : MonoBehaviour {
     /// <summary>
     /// 메인씬으로 나감
     /// </summary>
-    public void Exit()
+    public void Exit(MainManager.View mainView)
     {
-        StartCoroutine(ChangeScene(SceneName.main));
+        HandOverData.mainView = mainView;
+        StartCoroutine(ChangeScene(SceneName.main,exitWaitTime));
     }
 
     /// <summary>
@@ -115,7 +121,7 @@ public class InGameManager : MonoBehaviour {
     public void Restart()
     {
         HandOverData.ShowStageInfo = false;
-        StartCoroutine(ChangeScene(SceneName.inGameScene));
+        StartCoroutine(ChangeScene(SceneName.inGameScene,restartWaitTime));
     }
 
     /// <summary>
@@ -127,19 +133,20 @@ public class InGameManager : MonoBehaviour {
         if (HandOverData.WorldIndex == -1)
         {
             //mapedit
-            StartCoroutine(ChangeScene(SceneName.mapEdit));
+            StartCoroutine(ChangeScene(SceneName.mapEdit,exitWaitTime));
         }
         else if (HandOverData.StageIndex==StageList.GetWorldSize(HandOverData.WorldIndex)-1)
         {
             StageList.UnLock(HandOverData.WorldIndex+1,0);
-            Exit();
+            HandOverData.WorldIndex++;
+            Exit(MainManager.View.WorldSelect);
         }
         else
         {
             HandOverData.StageIndex++;
             StageList.UnLock(HandOverData.WorldIndex,HandOverData.StageIndex);
             HandOverData.StageName = StageList.GetStageName(HandOverData.WorldIndex, HandOverData.StageIndex);
-            StartCoroutine(ChangeScene(SceneName.inGameScene));
+            StartCoroutine(ChangeScene(SceneName.inGameScene,exitWaitTime));
         }
     }
 
@@ -149,11 +156,12 @@ public class InGameManager : MonoBehaviour {
     /// </summary>
     /// <param name="sceneName"></param>
     /// <returns></returns>
-    private IEnumerator ChangeScene(string sceneName)
+    private IEnumerator ChangeScene(string sceneName,float waitTime)
     {
         const float changeTime = 0.3f;
         GameObject.Find("Fader").GetComponent<ImageFader>().FadeOut(changeTime);
         yield return new WaitForSeconds(changeTime);
+        yield return new WaitForSeconds(waitTime);
         SceneManager.LoadScene(sceneName);
     }
 
