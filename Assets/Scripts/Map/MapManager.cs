@@ -47,7 +47,9 @@ public class MapManager : MonoBehaviour {
                 if (childPos.y < minY) minY = childPos.y;
             }
         }
-        CamCtrl.instance.SetPosition(new Vector2((minX + maxX) / 2, (minY + maxY) / 2));
+        Vector2 middlePoint = new Vector2((minX + maxX) / 2, (minY + maxY) / 2);
+        CamCtrl.instance.SetPosition(middlePoint);
+        BackGround.instance.SetPosition(middlePoint);
         CamCtrl.instance.SetThresholdPos(maxX, maxY, minX, minY);
     }
 

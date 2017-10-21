@@ -30,7 +30,11 @@ public class HistoryManager : MonoBehaviour
             Transform layer = currentMaptf.GetChild(i);
             for (int j = 0; j < layer.childCount; j++)
             {
-                layer.GetChild(j).GetComponent<InGameObject>().SaveHistory();
+                InGameObject obj = layer.GetChild(j).GetComponent<InGameObject>();
+                if (obj != null)
+                {
+                    obj.SaveHistory();
+                }
             }
         }
     }
@@ -50,7 +54,11 @@ public class HistoryManager : MonoBehaviour
             Transform layer = currentMaptf.GetChild(i);
             for (int j = 0; j < layer.childCount; j++)
             {
-                layer.GetChild(j).GetComponent<InGameObject>().RollBack();
+                InGameObject obj = layer.GetChild(j).GetComponent<InGameObject>();
+                if (obj != null)
+                {
+                obj.RollBack();
+                }
             }
         }
     }

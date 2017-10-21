@@ -77,6 +77,7 @@ public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler,
 
     protected void Move(Position dir)
     {
+        Position initCharPos = (Position)Character.instance.CurrentPos;
         InGameManager.instance.NewPhase();
         List<InGameObject> characterBlockData = MapManager.instance.BlockData(Character.instance.CurrentPos);
         bool ice = false;
@@ -95,7 +96,11 @@ public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler,
         {
             Character.instance.Move(Character.instance.CurrentPos + dir, true);
         }
-
+        //move success
+        if (initCharPos == Character.instance.CurrentPos)
+        {
+            InGameManager.instance.RollBack();
+        }
     }
 }
 

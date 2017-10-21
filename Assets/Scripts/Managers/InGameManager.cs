@@ -130,6 +130,7 @@ public class InGameManager : MonoBehaviour {
     public void StageClear()
     {
         int currentWorld = HandOverData.WorldIndex;
+        BackGround.instance.LightOn();
         if (HandOverData.WorldIndex == -1)
         {
             //mapedit
@@ -158,8 +159,10 @@ public class InGameManager : MonoBehaviour {
     /// <returns></returns>
     private IEnumerator ChangeScene(string sceneName,float waitTime)
     {
+        const float beforeTime = 2f;
         const float changeTime = 0.3f;
-        GameObject.Find("Fader").GetComponent<ImageFader>().FadeOut(changeTime);
+        yield return new WaitForSeconds(beforeTime);
+        GameObject.Find("Fader").GetComponent<ImageFader>().Opaque(changeTime);
         yield return new WaitForSeconds(changeTime);
         yield return new WaitForSeconds(waitTime);
         SceneManager.LoadScene(sceneName);
@@ -181,21 +184,21 @@ public class InGameManager : MonoBehaviour {
     /// </summary>
     private void FadeIn()
     {
-        GameObject.Find("Fader").GetComponent<ImageFader>().FadeIn(0.5f);
+        GameObject.Find("Fader").GetComponent<ImageFader>().Transparent(0.5f);
     }
 
 
     private void FadeOutStageInfo()
     {
         const float time = 0.3f;
-        GameObject.Find("Title").GetComponent<TextFader>().FadeOut(time);
-        GameObject.Find("Chapter").GetComponent<TextFader>().FadeOut(time);
+        GameObject.Find("Title").GetComponent<TextFader>().Transparent(time);
+        GameObject.Find("Chapter").GetComponent<TextFader>().Transparent(time);
     }
 
     private void FadeInStageInfo()
     {
         const float time = 0.2f;
-        GameObject.Find("Title").GetComponent<TextFader>().FadeIn(time);
-        GameObject.Find("Chapter").GetComponent<TextFader>().FadeIn(time);
+        GameObject.Find("Title").GetComponent<TextFader>().Opaque(time);
+        GameObject.Find("Chapter").GetComponent<TextFader>().Opaque(time);
     }
 }

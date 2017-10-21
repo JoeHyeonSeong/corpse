@@ -11,7 +11,7 @@ public class CamCtrl : MonoBehaviour {
     private const float maxInterval = 0.1f;
     private const float sideInterval = 0.6f;
     private const int zPos = -10;
-    private readonly Vector3 camPosAdjust = new Vector3(0, 4,0);
+    private readonly Vector3 camPosAdjust = Vector3.zero;
     public static CamCtrl instance;
 
     private float maxX;

@@ -67,6 +67,8 @@ public class StageLoader : MonoBehaviour {
             tileLevelParent = new GameObject("TileLevel");
             StageInfo stageInfo=tileLevelParent.AddComponent<StageInfo>();
             stageInfo.SetInitInfo(life, title);
+            //background
+            Instantiate(Resources.Load("Prefab/InGameObject/BackGround"), tileLevelParent.transform);
         }
         for (int i = 0; i < sData.triggerNum.Length; i++)
         {

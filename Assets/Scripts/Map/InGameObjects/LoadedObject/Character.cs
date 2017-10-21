@@ -6,8 +6,8 @@ using UnityEngine;
 public class Character : DestroyableObject
 {
 
-    private int life;
-    private Stack<int> lifeStack = new Stack<int>();
+    //private int life;
+    //private Stack<int> lifeStack = new Stack<int>();
 
     public static Character instance;
 
@@ -18,28 +18,23 @@ public class Character : DestroyableObject
         {
             instance = this;
         }
+        /*
         if (InGameManager.IsInGameScene())
         {
             life = StageInfo.instance.Life;
             SetLifeText();
         }
+        */
     }
 
 
 
     public override void Destroy()
     {
-        life--;
-        SetLifeText();
-        if (life > 0)
-        {
-            Revive();
-        }
-        else
-        {
-            InGameManager.instance.GameOver();
-        }
-        
+       // life--;
+        //SetLifeText();
+        Revive();
+
     }
 
     private void Revive()
@@ -55,9 +50,9 @@ public class Character : DestroyableObject
         Position lastPos = currentPos;
         Ice underIce = (Ice)MapManager.instance.Find(typeof(Ice), currentPos);
         Respawn();
-        if (isMoving && underIce != null)
+        StopCoroutine(MoveCoroutine());
+        if (isMoving && underIce != null)//움직이는 중이고 밑에 얼음 있음
         {
-            StopCoroutine(MoveCoroutine());
             mycorpse.GetComponent<Corpse>().Slide(lastPos + moveDir, true);
         }
     }
@@ -70,18 +65,19 @@ public class Character : DestroyableObject
 
     private IEnumerator RespawnAnimation()
     {
-        
-       // Scheduler.instance.MoveReport(this);
         //respawn animation
+        mygraphic.GetComponent<Animator>().Play("Respawn");
+        //몇초동안 인풋 막음
+        Scheduler.instance.MoveReport(this);
         yield return new WaitForSeconds(1);
-        //Scheduler.instance.StopReport(this);
-
+        Scheduler.instance.StopReport(this);
+        mygraphic.GetComponent<Animator>().Play("Character_Default");
     }
 
-    public override void Move(Position destination,  bool anim)
+    public override void Move(Position destination, bool anim)
     {
-        base.Move(destination,  anim);
-        bool flipX= transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
+        base.Move(destination, anim);
+        bool flipX = transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
         if (moveDir == new Position(1, 0))
         {
             flipX = true;
@@ -92,26 +88,29 @@ public class Character : DestroyableObject
         }
         transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX = flipX;
     }
-
+    /*
     private void SetLifeText()
     {
         GameObject.Find("LifeText").GetComponent<UnityEngine.UI.Text>().text = "×" + life;
     }
+    */
 
     public override void SaveHistory()
     {
         base.SaveHistory();
-        lifeStack.Push(life);
+       // lifeStack.Push(life);
     }
 
     public override void RollBack()
     {
         base.RollBack();
+        /*
         if (lifeStack.Count > 0)
         {
             life = lifeStack.Pop();
             SetLifeText();
         }
+        */
     }
 }
 

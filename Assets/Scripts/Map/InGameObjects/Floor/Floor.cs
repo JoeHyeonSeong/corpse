@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Floor : InGameObject, IComparable<Floor>
+public abstract class Floor : InGameObject, IComparable<Floor>
 {
     protected int stepPriority;
 
