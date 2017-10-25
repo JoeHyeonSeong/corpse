@@ -112,7 +112,7 @@ public class InGameManager : MonoBehaviour {
     public void Exit(MainManager.View mainView)
     {
         HandOverData.mainView = mainView;
-        StartCoroutine(ChangeScene(SceneName.main,exitWaitTime));
+        StartCoroutine(ChangeScene(SceneName.main,0,exitWaitTime));
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class InGameManager : MonoBehaviour {
     public void Restart()
     {
         HandOverData.ShowStageInfo = false;
-        StartCoroutine(ChangeScene(SceneName.inGameScene,restartWaitTime));
+        StartCoroutine(ChangeScene(SceneName.inGameScene,0,restartWaitTime));
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public class InGameManager : MonoBehaviour {
         if (HandOverData.WorldIndex == -1)
         {
             //mapedit
-            StartCoroutine(ChangeScene(SceneName.mapEdit,exitWaitTime));
+            StartCoroutine(ChangeScene(SceneName.mapEdit,0,exitWaitTime));
         }
         else if (HandOverData.StageIndex==StageList.GetWorldSize(HandOverData.WorldIndex)-1)
         {
@@ -147,7 +147,7 @@ public class InGameManager : MonoBehaviour {
             HandOverData.StageIndex++;
             StageList.UnLock(HandOverData.WorldIndex,HandOverData.StageIndex);
             HandOverData.StageName = StageList.GetStageName(HandOverData.WorldIndex, HandOverData.StageIndex);
-            StartCoroutine(ChangeScene(SceneName.inGameScene,exitWaitTime));
+            StartCoroutine(ChangeScene(SceneName.inGameScene,3.5f,exitWaitTime));
         }
     }
 
@@ -157,10 +157,10 @@ public class InGameManager : MonoBehaviour {
     /// </summary>
     /// <param name="sceneName"></param>
     /// <returns></returns>
-    private IEnumerator ChangeScene(string sceneName,float waitTime)
+    private IEnumerator ChangeScene(string sceneName,float beforeTime,float waitTime)
     {
-        const float beforeTime = 2f;
         const float changeTime = 0.3f;
+        BackGround.instance.transform.Find("BackgroundMusic").GetComponent<AudioFader>().Transparent(changeTime+waitTime);
         yield return new WaitForSeconds(beforeTime);
         GameObject.Find("Fader").GetComponent<ImageFader>().Opaque(changeTime);
         yield return new WaitForSeconds(changeTime);

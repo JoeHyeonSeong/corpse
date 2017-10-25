@@ -12,5 +12,7 @@ public class StartController :ViewController {
     {
         transform.Find("WorldButton").GetComponent<Button>().onClick.
             AddListener(() => MainManager.instance.GoToWorldSelect());
+        transform.Find("OptionButton").GetComponent<Button>().onClick.
+            AddListener(() => MainManager.instance.GoToOption());
     }
 }

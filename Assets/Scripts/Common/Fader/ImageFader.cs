@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class ImageFader : Transparencer
+public class ImageFader : Fader
 {
     private void SetPosition()
     {
@@ -29,14 +29,15 @@ public class ImageFader : Transparencer
         base.Opaque(time);
     }
 
-    protected override Color GetOriginalColor()
+    protected override float GetNum()
     {
-        return GetComponent<Image>().color;
+        return GetComponent<Image>().color.a;
     }
 
-    protected override void SetColor(Color newColor)
+    protected override void SetNum(float newNum)
     {
-        GetComponent<Image>().color = newColor;
+        Color myColor = GetComponent<Image>().color;
+        GetComponent<Image>().color =new Color(myColor.r,myColor.g,myColor.b, newNum);
     }
 
     protected override void TransparentFinish()

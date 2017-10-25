@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DefaultFloor : Floor {
+public class DefaultFloor : Floor
+{
 
     protected override void Start()
     {
         base.Start();
-        SetSprite();
+        if (InGameManager.IsInGameScene())
+        {
+            SetSprite();
+        }
     }
-    private static Sprite [] sprites;
+    private static Sprite[] sprites;
 
     private void SetSprite()
     {
@@ -21,6 +25,6 @@ public class DefaultFloor : Floor {
             sprites[2] = Resources.Load<Sprite>("Graphic/InGameObject/Floor/floor3");
         }
         System.Random random = new System.Random(currentPos.X + currentPos.Y);
-        mygraphic.GetComponent<SpriteRenderer>().sprite = sprites[random.Next(0,3)];
+        mygraphic.GetComponent<SpriteRenderer>().sprite = sprites[random.Next(0, 3)];
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class TextFader : Transparencer {
+public class TextFader : Fader {
     Text myText;
 
     private void Awake()
@@ -15,33 +15,13 @@ public class TextFader : Transparencer {
         myText.text = text;
     }
 
-    public override void Transparent(float time)
+    protected override float GetNum()
     {
-        base.Transparent(time);
+        return myText.color.a;
     }
 
-    public override void Opaque(float time)
+    protected override void SetNum(float newNum)
     {
-        base.Opaque(time);
-    }
-
-    protected override Color GetOriginalColor()
-    {
-        return myText.color;
-    }
-
-    protected override void SetColor(Color newColor)
-    {
-        myText.color = newColor;
-    }
-
-    protected override void OpaqueFinish()
-    {
-        //do nothing
-    }
-
-    protected override void TransparentFinish()
-    {
-        //do nothing
+        myText.color = new Color(myText.color.r, myText.color.g, myText.color.b, newNum);
     }
 }

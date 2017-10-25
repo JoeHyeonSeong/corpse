@@ -102,7 +102,7 @@ public class MainManager : MonoBehaviour
                 GoToWorldSelect();
                 break;
             case View.Option:
-                GoToOption();
+                GoToStart();
                 break;
             default:
                 Debug.Log("메뉴 이동 예외");
@@ -151,5 +151,6 @@ public class MainManager : MonoBehaviour
     {
         SetCurrentDat(View.Option, optionCon);
         optionCon.Open();
+        backButton.SetActive(true);
     }
 }

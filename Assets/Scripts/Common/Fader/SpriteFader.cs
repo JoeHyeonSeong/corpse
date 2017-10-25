@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpriteFader :Transparencer{
+public class SpriteFader :Fader{
     private SpriteRenderer mySpriteRend;
 
     private void Awake()
@@ -10,14 +10,20 @@ public class SpriteFader :Transparencer{
         mySpriteRend = GetComponent<SpriteRenderer>();    
     }
 
-    protected override Color GetOriginalColor()
+    protected override float GetNum()
     {
-        return mySpriteRend.color;
+        return mySpriteRend.color.a;
     }
 
-    protected override void SetColor(Color newColor)
+    public override void Opaque(float time)
     {
-        mySpriteRend.color = newColor;
+        base.Opaque(time);
+    }
+
+    protected override void SetNum(float newNum)
+    {
+        Color color = mySpriteRend.color;
+        mySpriteRend.color = new Color(color.r,color.g,color.b, newNum);
     }
 
     protected override void TransparentFinish()

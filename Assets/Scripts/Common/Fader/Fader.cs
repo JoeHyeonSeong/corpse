@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Transparencer : MonoBehaviour {
+public abstract class Fader : MonoBehaviour {
 
     public virtual void Transparent(float time)
     {
@@ -17,8 +17,7 @@ public abstract class Transparencer : MonoBehaviour {
     private IEnumerator AlphaChange(float time, bool plus)
     {
         float delta = (1 / time) * Time.deltaTime;
-        Color originCol = GetOriginalColor();
-        float alpha = originCol.a;
+        float alpha = GetNum();
         while ((alpha > 0 && !plus) || (alpha < 1 && plus))
         {
             if (plus)
@@ -29,7 +28,7 @@ public abstract class Transparencer : MonoBehaviour {
             {
                 alpha -= delta;
             }
-            SetColor(new Color(originCol.r, originCol.g, originCol.b, alpha));
+            SetNum(alpha);
             yield return new WaitForEndOfFrame();
         }
         if (plus)
@@ -42,11 +41,11 @@ public abstract class Transparencer : MonoBehaviour {
         }
     }
 
-    protected abstract Color GetOriginalColor();
+    protected abstract float GetNum();
 
-    protected abstract void SetColor(Color newColor);
+    protected abstract void SetNum(float newColor);
 
-    protected abstract void TransparentFinish();
+    protected virtual void TransparentFinish(){ }
 
-    protected abstract void OpaqueFinish();
+    protected virtual void OpaqueFinish() { }
 }
