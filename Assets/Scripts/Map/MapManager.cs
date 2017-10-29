@@ -66,7 +66,7 @@ public class MapManager : MonoBehaviour {
 
         foreach(InGameObject obj in currentBlock)
         {
-            if(obj.GetType().IsSubclassOf(typeof(Floor))||obj.GetType()==typeof(Floor))
+            if(obj.GetType().IsSubclassOf(typeof(Floor)))
             {
                 existFloor = true;
             }

@@ -143,7 +143,7 @@ public class MovableObject : LoadedObject
         //floor만 고르기
         foreach (InGameObject obj in currentBlockData)
         {
-            if (obj.GetType().IsSubclassOf(typeof(Floor)) || obj.GetType() == typeof(Floor))
+            if (obj.GetType().IsSubclassOf(typeof(Floor)))
             {
                 currentFloor.Add((Floor)obj);
             }
@@ -171,7 +171,7 @@ public class MovableObject : LoadedObject
         List<InGameObject> originDesBlockData = MapManager.instance.BlockData(lastPos);
         foreach (InGameObject obj in originDesBlockData)
         {
-            if (obj.GetType().IsSubclassOf(typeof(Floor)) || obj.GetType() == typeof(Floor))
+            if (obj.GetType().IsSubclassOf(typeof(Floor)))
             {
                 ((Floor)obj).Leave(this);
             }
@@ -186,7 +186,7 @@ public class MovableObject : LoadedObject
     /// <returns></returns>
     protected bool PushCheck(Position at)
     {
-        Position tempDir = at - currentPos;
+        Position tempDir = at - currentPos;//내가 움직일 방향
         List<InGameObject> desBlockData = MapManager.instance.BlockData(at);
         bool push = false;
         //push
@@ -194,7 +194,7 @@ public class MovableObject : LoadedObject
         {
             if (obj.GetType().IsSubclassOf(typeof(LoadedObject))//pushable
                &&!(MapManager.instance.Find(typeof(Ice),currentPos)!=null&&
-               MapManager.instance.Find(typeof(Floor),at) != null && isMoving))
+               MapManager.instance.Find(typeof(DefaultFloor),at) != null && isMoving))
             {
                     ((LoadedObject)obj).Push(this, tempDir);
                     push = true;
