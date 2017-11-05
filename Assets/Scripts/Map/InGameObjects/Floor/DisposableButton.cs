@@ -37,10 +37,10 @@ public class DisposableButton : FlipButton {
 
     public override void RollBack()
     {
-        base.RollBack();
         if (neverUseStack.Count > 0)
         {
             neverUsed = neverUseStack.Pop();
         }
+        base.RollBack();
     }
 }

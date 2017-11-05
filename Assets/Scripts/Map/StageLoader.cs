@@ -92,7 +92,7 @@ public class StageLoader : MonoBehaviour {
 
                     previewStatus = sData.state[counter];
                     previewThreshold = sData.threshold[counter];
-                  Transform obj= CreateBlock(sData.level[counter], x, y, z);
+                    Transform obj = CreateBlock(sData.level[counter], x, y, z);
                     gameObjects[x, y, z] = obj;
                     counter++;
                 }
@@ -106,7 +106,7 @@ public class StageLoader : MonoBehaviour {
                 for (int z = 0; z < LAYERS; z++)
                 {
                     currentX = x; currentY = y; currentZ = z;
-                    Transform obj=gameObjects[x, y, z];
+                    Transform obj = gameObjects[x, y, z];
                     if (obj != null)
                     {
                         currentObj = obj.GetComponent<InGameObject>();
@@ -115,7 +115,25 @@ public class StageLoader : MonoBehaviour {
                             AttachOperands();
                         }
                     }
-                    counter++;
+                }
+            }
+        }
+        for (int x = 0; x < WIDTH; x++)
+        {
+            for (int y = 0; y < HEIGHT; y++)
+            {
+                for (int z = 0; z < LAYERS; z++)
+                {
+                    currentX = x; currentY = y; currentZ = z;
+                    Transform obj = gameObjects[x, y, z];
+                    if (obj != null)
+                    {
+                        currentObj = obj.GetComponent<InGameObject>();
+                        if(currentObj!=null)
+                        {
+                            currentObj.Teleport(currentObj.CurrentPos);
+                        }
+                    }
                 }
             }
         }

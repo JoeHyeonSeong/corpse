@@ -5,20 +5,22 @@ using UnityEngine;
 
 public class GenPoint :Floor {
     protected static GenPoint activatingGenPoint;
+    private static GenPoint deactiv;
     public static GenPoint ActivatingGenPoint { get { return activatingGenPoint; } }
 
+    Stack<GenPoint> activatedGenPoints = new Stack<GenPoint>();
     protected override void Awake()
     {
         base.Awake();
         stepPriority = 0;
     }
 
-
+    
     public override void Step(MovableObject who)
     {
         TurnOn();
     }
-
+    
 
     protected override void Activate()
     {
@@ -31,7 +33,7 @@ public class GenPoint :Floor {
         if (activatingGenPoint != this)
         {
             base.Deactivate();
-            transform.Find("Sprite").GetComponent<SpriteRenderer>().color = Color.gray;
+            TurnOff();
         }
     }
 
@@ -48,4 +50,38 @@ public class GenPoint :Floor {
             transform.Find("Sprite").GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
+
+    protected void TurnOff()
+    {
+        if (deactiv != this)
+        {
+            GenPoint preDeactiv = deactiv;
+            deactiv = this;
+            if (preDeactiv != null)
+            {
+                preDeactiv.Activate();
+            }
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().color = Color.gray;
+        }
+    }
+    public override void RollBack()
+    {
+        if (activatedGenPoints.Count > 0)
+        {
+            GenPoint acGenPoint = activatedGenPoints.Pop();
+            if (this == acGenPoint)
+            {
+                Activate();
+            }
+        }
+        base.RollBack();
+        
+    }
+
+    public override void SaveHistory()
+    {
+        base.SaveHistory();
+        activatedGenPoints.Push(activatingGenPoint);
+    }
+    
 }

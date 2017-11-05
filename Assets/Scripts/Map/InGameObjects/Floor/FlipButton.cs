@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FlipButton : Floor {
+
     protected override void Awake()
     {
         base.Awake();
         stepPriority = 1;
     }
-
 
     [SerializeField]
     protected List<InGameObject> operands;
@@ -28,8 +28,10 @@ public class FlipButton : Floor {
     {
         foreach (InGameObject operand in operands)
         {
-
-            operand.AddStack();
+            if (operand != null)
+            {
+                operand.AddStack();
+            }
         }
     }
 

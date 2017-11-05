@@ -35,7 +35,6 @@ public abstract class InGameObject : MonoBehaviour
 
     protected Transform mygraphic;
 
-
     protected virtual void Awake()
     {
         if (GetComponent<SpriteRenderer>() != null)
@@ -44,7 +43,7 @@ public abstract class InGameObject : MonoBehaviour
         }
         mygraphic = transform.Find("Sprite");
     }
-
+    
     protected virtual void OnEnable()
     {
         if (InGameManager.IsInGameScene())
@@ -52,6 +51,7 @@ public abstract class InGameObject : MonoBehaviour
             Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
         }
     }
+    
     protected virtual void Start()
     {
         if (InGameManager.IsInGameScene())
