@@ -112,7 +112,7 @@ public class MovableObject : LoadedObject
         {
             isMoving = true;
             mySprite.localPosition += 1f / moveSpd * moveDir.ToVector3();
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(0.015f);
         }
         MoveEnd();
     }

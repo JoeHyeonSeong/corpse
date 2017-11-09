@@ -16,6 +16,7 @@ public class StageLoader : MonoBehaviour {
     private List<Vector3> currentTrigger;
     private Transform[,,] gameObjects;
     static public StageLoader instance;
+
     private void Awake()
     {
         instance = this;
@@ -189,7 +190,9 @@ public class StageLoader : MonoBehaviour {
         FindCurrentTrigger();
         for (int i = 1; i < currentTrigger.Count; i++)
         {
-            operands.Add(gameObjects[(int)currentTrigger[i].x, (int)currentTrigger[i].y, (int)currentTrigger[i].z].GetComponent<InGameObject>());
+            InGameObject operand = gameObjects[(int)currentTrigger[i].x, (int)currentTrigger[i].y, (int)currentTrigger[i].z].GetComponent<InGameObject>();
+            operands.Add(operand);
+            operand.AddLinkedButton(currentObj.GetComponent<FlipButton>());
         }
         currentObj.GetComponent<FlipButton>().Operands = operands;
     }

@@ -11,14 +11,18 @@ public abstract class InGameObject : MonoBehaviour
         deactivating,
         non_activatable
     }
+
     protected int activatingPoint = 0;
+
     [SerializeField]
     private int activateThreshold;
     public int ActivateThreshold { set { activateThreshold = value; } }
     Stack<History> myHistory = new Stack<History>();
 
-
     protected Position currentPos;
+
+    protected List<InGameObject> linkedButtons = new List<InGameObject>();
+
     /// <summary>
     /// return current position of game Object(read only)
     /// </summary>
@@ -31,7 +35,7 @@ public abstract class InGameObject : MonoBehaviour
     /// </summary>
     protected ActiveStatus currentStatus;
     public ActiveStatus CurrentStatus
-    { get { return currentStatus; }set { currentStatus = value; } }
+    { get { return currentStatus; } set { currentStatus = value; } }
 
     protected Transform mygraphic;
 
@@ -43,7 +47,7 @@ public abstract class InGameObject : MonoBehaviour
         }
         mygraphic = transform.Find("Sprite");
     }
-    
+
     protected virtual void OnEnable()
     {
         if (InGameManager.IsInGameScene())
@@ -51,7 +55,7 @@ public abstract class InGameObject : MonoBehaviour
             Teleport(new Position((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y)));
         }
     }
-    
+
     protected virtual void Start()
     {
         if (InGameManager.IsInGameScene())
@@ -68,12 +72,12 @@ public abstract class InGameObject : MonoBehaviour
         currentStatus = ActiveStatus.activating;
     }
 
-    public virtual void AddStack()
+    public virtual void AddActiveStack()
     {
         activatingPoint++;
         if (activatingPoint == activateThreshold)
         {
-            FlipStatus();
+            FlipActiveStatus();
         }
         else if (activatingPoint > activateThreshold)
         {
@@ -81,7 +85,7 @@ public abstract class InGameObject : MonoBehaviour
         }
     }
 
-    public virtual void SubStack()
+    public virtual void SubActiveStack()
     {
         bool wasThreshold = false;
         if (activatingPoint == activateThreshold)
@@ -94,11 +98,11 @@ public abstract class InGameObject : MonoBehaviour
         }
         if (wasThreshold)
         {
-            FlipStatus();
+            FlipActiveStatus();
         }
     }
 
-    protected virtual void FlipStatus()
+    protected virtual void FlipActiveStatus()
     {
         if (currentStatus == ActiveStatus.activating)
         {
@@ -109,6 +113,8 @@ public abstract class InGameObject : MonoBehaviour
             Activate();
         }
     }
+
+
     /// <summary>
     /// convert currentStatus to false
     /// </summary>
@@ -151,9 +157,10 @@ public abstract class InGameObject : MonoBehaviour
         }
         else
         {
-            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y* 10;
+            transform.Find("Sprite").GetComponent<SpriteRenderer>().sortingOrder = -(int)transform.position.y * 10;
         }
     }
+
     public virtual void SaveHistory()
     {
         myHistory.Push(new History(currentStatus, currentPos, activatingPoint));
@@ -175,5 +182,43 @@ public abstract class InGameObject : MonoBehaviour
             SetSortingOrder();
             ActivateCheck();
         }
+    }
+
+    public void AddLinkedButton(FlipButton button)
+    {
+        linkedButtons.Add(button);
+    }
+
+
+    public virtual void ShowLinks()
+    {
+        ShowLinks(linkedButtons);
+    }
+
+    protected void ShowLinks(List<InGameObject> objList)
+    {
+        if (!isFlickering)
+        {
+            StartCoroutine(Flicker());
+            foreach (InGameObject obj in objList)
+            {
+
+                StartCoroutine(obj.Flicker());
+            }
+        }
+    }
+
+    private bool isFlickering = false;
+    public virtual IEnumerator Flicker(float deltaTime = 0.3f, int num = 1)
+    {
+        isFlickering = true;
+        for (int i = 0; i < num; i++)
+        {
+            mygraphic.GetComponent<SpriteFader>().Transparent(deltaTime);
+            yield return new WaitForSeconds(deltaTime);
+            mygraphic.GetComponent<SpriteFader>().Opaque(deltaTime);
+            yield return new WaitForSeconds(deltaTime);
+        }
+        isFlickering = false;
     }
 }

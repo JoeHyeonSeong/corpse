@@ -197,10 +197,10 @@ namespace UnityEngine.UI.Extensions
         private void DistributePages()
         {
             int _offset = 0;
-            int _step = Screen.width;
-            int _dimension = 0;
+            float _step = GetComponent<RectTransform>().rect.width;
+            float _dimension = 0;
 
-            int currentXPosition = 0;
+            float currentXPosition = 0;
 
             for (int i = 0; i < _screensContainer.transform.childCount; i++)
             {

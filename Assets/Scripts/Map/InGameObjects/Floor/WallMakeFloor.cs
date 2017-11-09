@@ -19,6 +19,7 @@ public class WallMakeFloor : Floor {
         {
             myWall = Instantiate(Resources.Load<MakedWall>("Prefab/InGameObject/MakedWall"),
             transform.position, Quaternion.identity, transform.parent);
+            myWall.MyFloor = this;
         }
     }
     protected override void Deactivate()
@@ -65,5 +66,14 @@ public class WallMakeFloor : Floor {
         {
             myWall.Rise();
         }
+    }
+
+    public override IEnumerator Flicker(float deltaTime = 0.5F, int num = 2)
+    {
+        if (myWall.RiseStatus == MakedWall.Status.rise)
+        {
+            StartCoroutine(myWall.Flicker());
+        }
+        return base.Flicker(deltaTime, num);
     }
 }

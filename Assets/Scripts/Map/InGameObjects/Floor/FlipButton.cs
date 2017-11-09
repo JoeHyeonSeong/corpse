@@ -30,7 +30,7 @@ public class FlipButton : Floor {
         {
             if (operand != null)
             {
-                operand.AddStack();
+                operand.AddActiveStack();
             }
         }
     }
@@ -40,7 +40,12 @@ public class FlipButton : Floor {
         foreach (InGameObject operand in operands)
         {
 
-            operand.SubStack();
+            operand.SubActiveStack();
         }
+    }
+
+    public override void ShowLinks()
+    {
+        ShowLinks(operands);
     }
 }

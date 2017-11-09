@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler,IDragHandler
+public class TouchButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler,IDragHandler
 {
     Vector2 pressStartPos;
+
     const float dragThreshold = 50f;
-    bool alreadyMove;
+
+    private bool alreadyMove;
+    private bool showInfo = false;//기다리는동안 false가 안된다면 클릭했던것의 정보 보여줌
 
     public void OnPointerUp(PointerEventData data)
     {
-        alreadyMove = false;
+        if (alreadyMove)
+        {
+            alreadyMove = false;
+        }
+        showInfo = false;
     }
 
     public void OnDrag(PointerEventData data)
     {
+        showInfo = false;//움직였으니까 안보여줌
         if (Scheduler.instance.CurrentCycle != Scheduler.GameCycle.InputTime||alreadyMove)
         {
             //deny input
@@ -56,6 +64,7 @@ public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler,
     public void OnPointerDown(PointerEventData data)
     {
         pressStartPos = data.pressPosition;
+        StartCoroutine(WaitAndShowInfo(0.2f));
     }
 
     private void Update()
@@ -101,6 +110,32 @@ public class MoveButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler,
         {
             InGameManager.instance.RollBack();
         }
+    }
+
+    IEnumerator WaitAndShowInfo(float waitTime)
+    {
+        showInfo = true;
+        yield return new WaitForSeconds(waitTime);
+        //show info
+       while(showInfo)
+        {
+            RaycastHit2D startTouch = GettouchOne(pressStartPos);
+            if (startTouch)
+            {
+                startTouch.transform.parent.GetComponent<InGameObject>().ShowLinks();
+            }
+            yield return 0;
+        }
+    }
+
+    RaycastHit2D GettouchOne(Vector3 screenPos)
+    {
+        Vector3 startPoint = Camera.main.ScreenToWorldPoint(pressStartPos);
+        RaycastHit2D hit =
+        Physics2D.Raycast(startPoint,
+        Vector3.back, 1,
+        1 << LayerMask.NameToLayer("Info"));
+        return hit;
     }
 }
 

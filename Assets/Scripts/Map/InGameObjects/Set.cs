@@ -8,7 +8,7 @@ public class Set : InGameObject {
         base.Activate();
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<SignLine>().AddStack();
+            transform.GetChild(i).GetComponent<SignLine>().AddActiveStack();
         }
     }
 
@@ -17,7 +17,7 @@ public class Set : InGameObject {
         base.Deactivate();
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<SignLine>().SubStack();
+            transform.GetChild(i).GetComponent<SignLine>().SubActiveStack();
         }
     }
 }
