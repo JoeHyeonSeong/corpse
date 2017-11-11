@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class Character : DestroyableObject
 {
-
-    //private int life;
-    //private Stack<int> lifeStack = new Stack<int>();
+    private bool canMove=true;
 
     public static Character instance;
+
+    private Queue<Position> moveDirQueue = new Queue<Position>();
 
     protected override void Awake()
     {
@@ -27,14 +27,12 @@ public class Character : DestroyableObject
         */
     }
 
-
-
     public override void Destroy()
     {
-       // life--;
+        // life--;
         //SetLifeText();
+        canMove = false;
         Revive();
-
     }
 
     private void Revive()
@@ -60,22 +58,24 @@ public class Character : DestroyableObject
     private void Respawn()
     {
         Teleport(GenPoint.ActivatingGenPoint.CurrentPos);
-        StartCoroutine(RespawnAnimation());
+        StartCoroutine(RespawnDelay());
     }
 
-    private IEnumerator RespawnAnimation()
+    private IEnumerator RespawnDelay()
     {
         //respawn animation
         mygraphic.GetComponent<Animator>().Play("Respawn");
-        //몇초동안 인풋 막음
         Scheduler.instance.MoveReport(this);
         yield return new WaitForSeconds(1);
         Scheduler.instance.StopReport(this);
+        canMove = true;
         mygraphic.GetComponent<Animator>().Play("Character_Default");
+        MoveOrderDequeue();
     }
 
     public override void Move(Position destination, bool anim)
     {
+        Debug.Log("d");
         base.Move(destination, anim);
         bool flipX = transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
         if (moveDir == new Position(1, 0))
@@ -88,12 +88,7 @@ public class Character : DestroyableObject
         }
         transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX = flipX;
     }
-    /*
-    private void SetLifeText()
-    {
-        GameObject.Find("LifeText").GetComponent<UnityEngine.UI.Text>().text = "×" + life;
-    }
-    */
+
 
     public override void SaveHistory()
     {
@@ -111,6 +106,50 @@ public class Character : DestroyableObject
             SetLifeText();
         }
         */
+    }
+
+    /// <summary>
+    /// 다음에 destination으로 이동하라고 명령
+    /// 캐릭터의 조종을 위한 함수임
+    /// 평소엔 Move쓰셈
+    /// </summary>
+    /// <param name="direction"></param>
+    public void MoveOrderEnqueue(Position direction)
+    {
+        if (isMoving||!canMove)
+        {
+            moveDirQueue.Enqueue(direction);
+        }
+        else
+        {
+            TryMove(direction);
+        }
+    }
+
+    private void TryMove(Position dir)
+    {
+        Position initPos = currentPos;
+        InGameManager.instance.NewPhase();
+        Move(dir+ currentPos, true);
+        if (initPos == Character.instance.CurrentPos)
+        {
+            InGameManager.instance.RollBack();
+        }
+    }
+
+    protected override void MoveEnd()
+    {
+        base.MoveEnd();
+        MoveOrderDequeue();
+    }
+
+    private void MoveOrderDequeue()
+    {
+        Debug.Log(isMoving + "ismoving");
+        if (moveDirQueue.Count > 0&&canMove&&Scheduler.instance.CurrentCycle==Scheduler.GameCycle.InputTime)
+        {
+            TryMove(moveDirQueue.Dequeue());
+        }
     }
 }
 

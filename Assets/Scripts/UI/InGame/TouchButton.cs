@@ -24,7 +24,7 @@ public class TouchButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     public void OnDrag(PointerEventData data)
     {
         showInfo = false;//움직였으니까 안보여줌
-        if (Scheduler.instance.CurrentCycle != Scheduler.GameCycle.InputTime||alreadyMove)
+        if (alreadyMove)
         {
             //deny input
             return;
@@ -56,7 +56,7 @@ public class TouchButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
                     result = Direction.Dir4ToPos(Dir4.Down);
                 }
             }
-            Move(result);
+            Character.instance.MoveOrderEnqueue(result);
             alreadyMove = true;
         }
     }
@@ -71,46 +71,19 @@ public class TouchButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
     {
         if (Scheduler.instance.CurrentCycle == Scheduler.GameCycle.InputTime)
         {
-            Position pos = null;
-            if (Input.GetKeyDown(KeyCode.W)) pos = Direction.Dir4ToPos(Dir4.Up);
-            if (Input.GetKeyDown(KeyCode.S)) pos = Direction.Dir4ToPos(Dir4.Down);
-            if (Input.GetKeyDown(KeyCode.A)) pos = Direction.Dir4ToPos(Dir4.Left);
-            if (Input.GetKeyDown(KeyCode.D)) pos = Direction.Dir4ToPos(Dir4.Right);
-            if (pos != null)
+            Position dir = null;
+            if (Input.GetKeyDown(KeyCode.W)) dir = Direction.Dir4ToPos(Dir4.Up);
+            if (Input.GetKeyDown(KeyCode.S)) dir = Direction.Dir4ToPos(Dir4.Down);
+            if (Input.GetKeyDown(KeyCode.A)) dir = Direction.Dir4ToPos(Dir4.Left);
+            if (Input.GetKeyDown(KeyCode.D)) dir = Direction.Dir4ToPos(Dir4.Right);
+            if (dir != null)
             {
-                Move(pos);
+                Character.instance.MoveOrderEnqueue(dir);
             }
         }
 
     }
 
-    protected void Move(Position dir)
-    {
-        Position initCharPos = (Position)Character.instance.CurrentPos;
-        InGameManager.instance.NewPhase();
-        List<InGameObject> characterBlockData = MapManager.instance.BlockData(Character.instance.CurrentPos);
-        bool ice = false;
-        foreach (InGameObject obj in characterBlockData)
-        {
-            if (obj.GetType() == typeof(Ice))
-            {
-                ice = true;
-            }
-        }
-        if (ice)
-        {
-            Character.instance.Slide(Character.instance.CurrentPos + dir, true);
-        }
-        else
-        {
-            Character.instance.Move(Character.instance.CurrentPos + dir, true);
-        }
-        //move success
-        if (initCharPos == Character.instance.CurrentPos)
-        {
-            InGameManager.instance.RollBack();
-        }
-    }
 
     IEnumerator WaitAndShowInfo(float waitTime)
     {

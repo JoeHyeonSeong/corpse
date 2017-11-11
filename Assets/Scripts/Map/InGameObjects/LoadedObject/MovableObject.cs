@@ -72,8 +72,6 @@ public class MovableObject : LoadedObject
         //push
         PushCheck(destination);
 
-
-
         if (MapManager.instance.CanGo(destination))
         {
             //can go to destination
@@ -106,13 +104,12 @@ public class MovableObject : LoadedObject
     protected IEnumerator MoveCoroutine()
     {
         Scheduler.instance.MoveReport(this);
-        Transform mySprite = transform.Find("Sprite");
-        mySprite.localPosition = -moveDir.ToVector3();
+        mygraphic.localPosition = -moveDir.ToVector3();
         for (int i = 0; i < moveSpd; i++)
         {
             isMoving = true;
-            mySprite.localPosition += 1f / moveSpd * moveDir.ToVector3();
-            yield return new WaitForSeconds(0.015f);
+            mygraphic.localPosition += 1f / moveSpd * moveDir.ToVector3();
+            yield return new WaitForEndOfFrame();
         }
         MoveEnd();
     }
@@ -125,7 +122,7 @@ public class MovableObject : LoadedObject
         StepCheck();
     }
 
-    private void MoveEnd()
+    protected virtual void MoveEnd()
     {
         //touch
         MapManager.instance.ResizeSideLasers(currentPos);
