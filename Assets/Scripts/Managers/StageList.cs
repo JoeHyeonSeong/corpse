@@ -19,7 +19,7 @@ public static class StageList
     private static int[] StageNo = new int[] { 8, 8, 8 };
     private static string[,] stageList = new string[,] {
         {"jslevel1","jslevel2","jslevel3","jslevel4","jslevel5","jslevel6","jslevel7","jslevel8"},//world0
-        {"jsLevel9","jslevel10","jslevel11","jslevel12","jslevel13","jslevel14","jslevel15","Level"},//world1
+        {"jsLevel9","jslevel10","jslevel11","jslevel12","jslevel13","jslevel14","jslevel15","JS2"},//world1
         {"Level","Level","Level","Level","Level","Level","Level","Level"}//world2
     };
 

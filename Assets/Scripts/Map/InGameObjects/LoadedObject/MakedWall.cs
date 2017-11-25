@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MakedWall:Wall {
-    AudioSource riseSound;
+    SoundEffectCtrl riseSound;
     WallMakeFloor myFloor;
 
     public enum Status { rise, sink };
@@ -14,7 +14,7 @@ public class MakedWall:Wall {
     protected override void Awake()
     {
         base.Awake();
-        riseSound = transform.Find("StoneRisingSound").GetComponent<AudioSource>();
+        riseSound = transform.Find("StoneRisingSound").GetComponent<SoundEffectCtrl>();
     }
 
     public void Rise()

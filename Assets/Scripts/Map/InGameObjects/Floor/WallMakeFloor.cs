@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class WallMakeFloor : Floor {
     MakedWall myWall;
+
     protected override void Activate()
     {
         base.Activate();
-
         CreateWall();
     }
 

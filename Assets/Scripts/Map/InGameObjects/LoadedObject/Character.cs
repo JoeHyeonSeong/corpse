@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Character : DestroyableObject
 {
+    private const float respawnDelayTime = 1;
     private bool canMove=true;
 
     public static Character instance;
@@ -18,13 +19,12 @@ public class Character : DestroyableObject
         {
             instance = this;
         }
-        /*
+        
         if (InGameManager.IsInGameScene())
         {
-            life = StageInfo.instance.Life;
-            SetLifeText();
+            Scheduler.instance.InputTimeStart +=new Scheduler.voidFunc(MoveOrderDequeue);
         }
-        */
+        
     }
 
     public override void Destroy()
@@ -44,6 +44,10 @@ public class Character : DestroyableObject
         //시체 방향
         mycorpse.transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX =
             transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
+        //영혼
+        GameObject spiritpref = Resources.Load<GameObject>("Prefab/InGameObject/Spirit");
+        GameObject spirit = Instantiate(spiritpref, currentPos.ToVector3(),Quaternion.identity);
+        spirit.GetComponent<Spirit>().InitSetting(GenPoint.ActivatingGenPoint.CurrentPos.ToVector3(),respawnDelayTime);
         //gen point 에서 다시 살아남
         Position lastPos = currentPos;
         Ice underIce = (Ice)MapManager.instance.Find(typeof(Ice), currentPos);
@@ -66,7 +70,7 @@ public class Character : DestroyableObject
         //respawn animation
         mygraphic.GetComponent<Animator>().Play("Respawn");
         Scheduler.instance.MoveReport(this);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(respawnDelayTime);
         Scheduler.instance.StopReport(this);
         canMove = true;
         mygraphic.GetComponent<Animator>().Play("Character_Default");
@@ -75,7 +79,6 @@ public class Character : DestroyableObject
 
     public override void Move(Position destination, bool anim)
     {
-        Debug.Log("d");
         base.Move(destination, anim);
         bool flipX = transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
         if (moveDir == new Position(1, 0))
@@ -145,11 +148,11 @@ public class Character : DestroyableObject
 
     private void MoveOrderDequeue()
     {
-        Debug.Log(isMoving + "ismoving");
         if (moveDirQueue.Count > 0&&canMove&&Scheduler.instance.CurrentCycle==Scheduler.GameCycle.InputTime)
         {
             TryMove(moveDirQueue.Dequeue());
         }
     }
+
 }
 

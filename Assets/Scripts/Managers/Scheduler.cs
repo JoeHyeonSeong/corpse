@@ -10,6 +10,9 @@ public class Scheduler : MonoBehaviour {
     }
     public static Scheduler instance;
 
+    public delegate void voidFunc();
+    public voidFunc InputTimeStart;
+
     private GameCycle currentCycle;
     public GameCycle CurrentCycle { get { return currentCycle; } }
     /// <summary>
@@ -40,6 +43,7 @@ public class Scheduler : MonoBehaviour {
         if (movingObject.Count == 0)
         {
             currentCycle = GameCycle.InputTime;
+            InputTimeStart();
         }
     }
 }

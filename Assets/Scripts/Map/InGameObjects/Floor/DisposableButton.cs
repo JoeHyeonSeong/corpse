@@ -5,11 +5,16 @@ using UnityEngine;
 public class DisposableButton : FlipButton {
     Stack<bool> neverUseStack = new Stack<bool>();
     bool neverUsed = true;
+    Sprite OnImage;
+    Sprite OffImage;
 
     protected override void Awake()
     {
         base.Awake();
         stepPriority = 1;
+        OnImage = Resources.Load<Sprite>("Graphic/InGameObject/doorButton_horizontal_on");
+        OffImage = Resources.Load<Sprite>("Graphic/InGameObject/doorButton_horizontal2");
+
     }
 
 
@@ -17,6 +22,7 @@ public class DisposableButton : FlipButton {
     {
         if (neverUsed)
         {
+            mygraphic.GetComponent<SpriteRenderer>().sprite = OffImage;
             neverUsed = false;
             base.Step(who);
         }
@@ -39,7 +45,12 @@ public class DisposableButton : FlipButton {
     {
         if (neverUseStack.Count > 0)
         {
+            bool currentNeverused = neverUsed;
             neverUsed = neverUseStack.Pop();
+            if (currentNeverused == false && neverUsed == true)
+            {
+                mygraphic.GetComponent<SpriteRenderer>().sprite = OnImage;
+            }
         }
         base.RollBack();
     }
