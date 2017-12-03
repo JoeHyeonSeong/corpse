@@ -11,7 +11,7 @@ public class StartController :ViewController {
     private void InitSetting()
     {
         transform.Find("WorldButton").GetComponent<Button>().onClick.
-            AddListener(() => MainManager.instance.GoToWorldSelect());
+            AddListener(() => MainManager.instance.GoToStageSelect(0));
         transform.Find("OptionButton").GetComponent<Button>().onClick.
             AddListener(() => MainManager.instance.GoToOption());
         transform.Find("ResetButton").GetComponent<Button>().onClick.

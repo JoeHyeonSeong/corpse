@@ -140,7 +140,7 @@ public class InGameManager : MonoBehaviour {
         {
             StageList.UnLock(HandOverData.WorldIndex+1,0);
             HandOverData.WorldIndex++;
-            Exit(MainManager.View.WorldSelect);
+            Exit(MainManager.View.StageSelect);
         }
         else
         {

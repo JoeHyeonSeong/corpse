@@ -5,21 +5,22 @@ using UnityEngine;
 public class MainManager : MonoBehaviour
 {
     private ViewController startCon;
-    private ViewController worldSelectCon;
+    //private ViewController worldSelectCon;
     private ViewController stageSelectCon;
     private ViewController optionCon;
     private ViewController currentCon;
 
     private GameObject backButton;
 
-    public enum View { Start, WorldSelect, StageSelect, Option };
+    private bool isSceneChanging;//현재 씬이 넘어가는중
+
+    public enum View { Start, StageSelect, Option };
     private View currentView;
     public static MainManager instance;
 
 
     private void Awake()
     {
-        //Screen.SetResolution(540, 960, true);
         if (instance == null)
         {
             instance = this;
@@ -37,7 +38,7 @@ public class MainManager : MonoBehaviour
     private void SetInitInfo()
     {
         startCon = GameObject.Find("Start").GetComponent<ViewController>();
-        worldSelectCon = GameObject.Find("WorldSelect").GetComponent<ViewController>();
+        //worldSelectCon = GameObject.Find("WorldSelect").GetComponent<ViewController>();
         stageSelectCon = GameObject.Find("StageSelect").GetComponent<ViewController>();
         optionCon = GameObject.Find("Option").GetComponent<ViewController>();
         backButton = GameObject.Find("BackButton");
@@ -49,9 +50,6 @@ public class MainManager : MonoBehaviour
         {
             case View.Start:
                 GoToStart();
-                break;
-            case View.WorldSelect:
-                GoToWorldSelect();
                 break;
             case View.StageSelect:
                 int worldIndex = (HandOverData.WorldIndex == -1) ? PlayerPrefs.GetInt(PrefsKey.lastWorld) : HandOverData.WorldIndex;
@@ -74,15 +72,18 @@ public class MainManager : MonoBehaviour
     /// <param name="stageNum"></param>
     public void GoToStage(int worldIndex, int stageIndex)
     {
-        HandOverData.StageName = StageList.GetStageName(worldIndex, stageIndex);
-        HandOverData.StageIndex = stageIndex;
-        HandOverData.WorldIndex = worldIndex;
-        HandOverData.ShowStageInfo = true;
-        if (worldIndex > PlayerPrefs.GetInt(PrefsKey.lastWorld))
+        if (isSceneChanging == false)
         {
-            PlayerPrefs.SetInt(PrefsKey.lastWorld, worldIndex);
+            HandOverData.StageName = StageList.GetStageName(worldIndex, stageIndex);
+            HandOverData.StageIndex = stageIndex;
+            HandOverData.WorldIndex = worldIndex;
+            HandOverData.ShowStageInfo = true;
+            if (worldIndex > PlayerPrefs.GetInt(PrefsKey.lastWorld))
+            {
+                PlayerPrefs.SetInt(PrefsKey.lastWorld, worldIndex);
+            }
+            UnityEngine.SceneManagement.SceneManager.LoadScene(SceneName.inGameScene);
         }
-        UnityEngine.SceneManagement.SceneManager.LoadScene(SceneName.inGameScene);
     }
 
     /// <summary>
@@ -90,23 +91,23 @@ public class MainManager : MonoBehaviour
     /// </summary>
     public void GoToBack()
     {
-        switch (currentView)
+        if (isSceneChanging == false)
         {
-            case View.Start:
-                Application.Quit();
-                break;
-            case View.WorldSelect:
-                GoToStart();
-                break;
-            case View.StageSelect:
-                GoToWorldSelect();
-                break;
-            case View.Option:
-                GoToStart();
-                break;
-            default:
-                Debug.Log("메뉴 이동 예외");
-                break;
+            switch (currentView)
+            {
+                case View.Start:
+                    Application.Quit();
+                    break;
+                case View.StageSelect:
+                    GoToStart();
+                    break;
+                case View.Option:
+                    GoToStart();
+                    break;
+                default:
+                    Debug.Log("메뉴 이동 예외");
+                    break;
+            }
         }
     }
 
@@ -128,24 +129,48 @@ public class MainManager : MonoBehaviour
 
     public void GoToStageSelect(int worldIndex)
     {
-        SetCurrentDat(View.StageSelect, stageSelectCon);
-        ((StageSelectController)stageSelectCon).Open(worldIndex);
+        if (isSceneChanging == false)
+        {
+            StartCoroutine(GoToStageSelectRoutine(worldIndex));
+        }
     }
 
     public void GoToStart()
     {
-
-        SetCurrentDat(View.Start, startCon);
-        startCon.Open();
-        backButton.SetActive(false);
+        if (isSceneChanging == false)
+        {
+            SetCurrentDat(View.Start, startCon);
+            startCon.Open();
+            backButton.SetActive(false);
+        }
     }
 
+    
+    private IEnumerator GoToStageSelectRoutine(int worldIndex)
+    {
+        const float zoomTime = 1f;
+        const float returnTime = 0.1f;
+        MainCamCtrl.instance.Zoom(zoomTime, true);
+        startCon.transform.Find("Fade").GetComponent<ImageFader>().Opaque(zoomTime);
+        yield return new WaitForSeconds(zoomTime+0.1f);
+        MainCamCtrl.instance.GoToOriginalSize();
+        yield return new WaitForSeconds(returnTime+0.1f);
+        SetCurrentDat(View.StageSelect, stageSelectCon);
+        ((StageSelectController)stageSelectCon).Open(worldIndex);
+        backButton.SetActive(true);
+        isSceneChanging = false;
+        startCon.transform.Find("Fade").GetComponent<ImageFader>().Transparent(returnTime);
+        yield return null;
+    }
+
+    /*
     public void GoToWorldSelect()
     {
         SetCurrentDat(View.WorldSelect, worldSelectCon);
         worldSelectCon.Open();
         backButton.SetActive(true);
     }
+    */
 
     public void GoToOption()
     {

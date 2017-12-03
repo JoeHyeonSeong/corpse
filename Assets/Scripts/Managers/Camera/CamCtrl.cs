@@ -3,27 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CamCtrl : MonoBehaviour {
-    private const float maxCamSize = 10f;
-    private const float minCamSize= 7f;
-    private const float maxMoveTime = 0.15f;
-    private const float minMoveTime = 0.1f;
-    private const float zoomMoveTime=0.1f;
-    private const float maxInterval = 0.1f;
-    private const float sideInterval = 0.6f;
-    private const int zPos = -10;
-    private readonly Vector3 camPosAdjust = Vector3.zero;
-    public static CamCtrl instance;
+#region
+    protected const float maxCamSize = 10f;
+    protected const float minCamSize= 5f;
+    protected const float maxMoveTime = 0.15f;
+    protected const float minMoveTime = 0.1f;
+    protected const float zoomMoveTime=0.1f;
+    protected const float maxInterval = 0.1f;
+    protected const float sideInterval = 0.6f;
+    protected const int zPos = -10;
+    protected readonly Vector3 camPosAdjust = Vector3.zero;
+#endregion// constants
 
-    private float maxX;
-    private float maxY;
-    private float minX;
-    private float minY;
 
-    private bool isZoomIn;
 
-    private Camera myCam;
+    protected bool isZoomIn;
 
-    private Vector3 targetPos;
+    protected Camera myCam;
+
+    protected Vector3 targetPos;
+    
     public Vector3 TargetPos
     {
         set
@@ -32,27 +31,23 @@ public class CamCtrl : MonoBehaviour {
             targetPos.z = zPos;
         }
     }
-
-    private void Awake()
+    
+    protected virtual void Awake()
     {
-        instance = this;
         myCam = GetComponent<Camera>();
         myCam.orthographicSize = maxCamSize;
+        targetPos = transform.position;
     }
 
-    public void SetThresholdPos(float mapMaxX, float mapMaxY, float mapMinX, float mapMinY)
-    {
-        float ySize = myCam.orthographicSize-sideInterval;
-        float xSize = ySize * myCam.pixelWidth/myCam.pixelHeight-sideInterval;
-        maxX = mapMinX + xSize;
-        maxY = mapMinY + ySize;
-        minX = mapMaxX - xSize;
-        minY = mapMaxY - ySize;
-    }
 
     public void SetPosition(Vector2 pos)
     {
         transform.position = new Vector3(pos.x, pos.y, zPos);
+    }
+
+    public void GoToOriginalSize()
+    {
+        myCam.orthographicSize = maxCamSize;
     }
 
     public void Zoom(float time, bool zoomIn)
@@ -100,11 +95,10 @@ public class CamCtrl : MonoBehaviour {
         CamMovRoutine();
     }
 
-    private void CamMovRoutine()
+    protected virtual void CamMovRoutine()
     {
         //cam moving routine
         Vector3 moveVel=Vector3.zero;
-        TargetPos = Character.instance.CurrentPos.ToVector3()+camPosAdjust;
         float diff = (targetPos - transform.position).magnitude;
         if (diff > maxInterval)
         {
@@ -128,8 +122,6 @@ public class CamCtrl : MonoBehaviour {
             else
             {
                 movTime = zoomMoveTime;
-                expectPos.x = Mathf.Clamp(expectPos.x, minX, maxX);
-                expectPos.y = Mathf.Clamp(expectPos.y, minY, maxY);
                 transform.position = Vector3.Lerp(transform.position, expectPos, movTime);
             }
         }

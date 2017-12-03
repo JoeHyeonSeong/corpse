@@ -93,7 +93,20 @@ public class Laser : InGameObject
 
     private void SetLaserShape()
     {
-        transform.Find("Sprite").GetComponent<SpriteRenderer>().size = new Vector2(1, Mathf.Abs(laserLength));
+        Transform back = mygraphic.Find("Back");
+        Transform front = mygraphic.Find("Front");
+        transform.Find("Sprite").GetComponent<SpriteRenderer>().size = new Vector2(1, Mathf.Abs(laserLength)-2);
+        back.localPosition = new Vector3(0, Mathf.Abs(laserLength)-1);
+        if (Mathf.Abs(laserLength) <= 1)
+        {
+            mygraphic.GetComponent<SpriteRenderer>().enabled = false;
+            back.gameObject.SetActive(false);
+        }
+        else
+        {
+            mygraphic.GetComponent<SpriteRenderer>().enabled = true;
+            back.gameObject.SetActive(true);
+        }
         //rotate
         switch (dir)
         {
@@ -121,6 +134,9 @@ public class Laser : InGameObject
         {
             endPos = currentPos;
         }
-        mygraphic.GetComponent<SpriteRenderer>().sortingOrder = (endPos.Y < currentPos.Y) ? -endPos.Y * 10 - 1 : -currentPos.Y * 10 - 1;
+        int sortingOrder = (endPos.Y < currentPos.Y) ? -endPos.Y * 10 - 1 : -currentPos.Y * 10 - 1;
+        mygraphic.GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
+        mygraphic.Find("Front").GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
+        mygraphic.Find("Back").GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
     }
 }

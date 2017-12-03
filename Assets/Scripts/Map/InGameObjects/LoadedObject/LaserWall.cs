@@ -5,6 +5,7 @@ using UnityEngine;
 public class LaserWall : Wall
 {
     protected Laser myLaser;
+
     [SerializeField]
     protected Dir4 dir;
     public Dir4 Dir
@@ -12,10 +13,12 @@ public class LaserWall : Wall
         get { return dir; }
     }
 
+    SpriteFader onSign;
+
     protected override void Awake()
     {
         base.Awake();
-
+        onSign = transform.Find("laserWall_on_sign").GetComponent<SpriteFader>();
     }
 
     protected override void Start()
@@ -30,6 +33,7 @@ public class LaserWall : Wall
     protected override void Activate()
     {
         base.Activate();
+        onSign.Opaque(0.2f);
         MakeLaser();
 
 
@@ -42,7 +46,7 @@ public class LaserWall : Wall
         base.Deactivate();
         if (myLaser != null)
         {
-
+            onSign.Transparent(0.2f);
             myLaser.gameObject.SetActive(false);
         }
     }

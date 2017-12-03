@@ -14,16 +14,8 @@ public class Hole : FlipButton{
     {
         if(who.GetType()==typeof(Box))
         {
+            ((Box)who).SetColor(true);
             base.Step(who);
-        }
-    }
-
-
-    public override void Leave(MovableObject who)
-    {
-        if (who.GetType() == typeof(Box))
-        {
-            base.Leave(who);
         }
     }
 }

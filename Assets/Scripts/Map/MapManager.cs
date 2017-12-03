@@ -48,9 +48,9 @@ public class MapManager : MonoBehaviour {
             }
         }
         Vector2 middlePoint = new Vector2((minX + maxX) / 2, (minY + maxY) / 2);
-        CamCtrl.instance.SetPosition(middlePoint);
+        InGameCamCtrl.instance.SetPosition(middlePoint);
         BackGround.instance.SetPosition(middlePoint);
-        CamCtrl.instance.SetThresholdPos(maxX, maxY, minX, minY);
+        ((InGameCamCtrl)InGameCamCtrl.instance).SetThresholdPos(maxX, maxY, minX, minY);
     }
 
     /// <summary>

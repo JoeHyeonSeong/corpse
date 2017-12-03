@@ -11,8 +11,8 @@ public class Spine : Floor {
         stepPriority = 3;
         if (spineOn == null)
         {
-            spineOn = Resources.Load<Sprite>("Graphic/InGameObject/spineOn");
-            spineOff = Resources.Load<Sprite>("Graphic/InGameObject/spineOff");
+            spineOn = Resources.Load<Sprite>("Graphic/InGameObject/Spine/spineOn");
+            spineOff = Resources.Load<Sprite>("Graphic/InGameObject/Spine/spineOff");
         }
     }
 
