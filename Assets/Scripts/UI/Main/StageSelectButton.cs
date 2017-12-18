@@ -13,6 +13,7 @@ public class StageSelectButton :Button {
         this.stageIndex = stageIndex;
         isUnLocked = StageList.IsUnLocked(worldIndex,stageIndex);
         onClick.AddListener(()=>OnClick());
+        transform.Find("Title").GetComponent<Text>().text = RomanNumber.Roman(stageIndex+1);
         if (isUnLocked)
         {
             transform.Find("LockImage").gameObject.SetActive(false);

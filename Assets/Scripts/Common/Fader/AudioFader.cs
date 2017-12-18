@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class AudioFader : Fader{
     protected AudioSource mySrc;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         mySrc = GetComponent<AudioSource>();
     }

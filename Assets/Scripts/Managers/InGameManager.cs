@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class InGameManager : MonoBehaviour {
+public class InGameManager : MonoBehaviour
+{
     public static InGameManager instance;
     private int worldIndex;
-    public int WorldIndex{get{return worldIndex;}}
+    public int WorldIndex { get { return worldIndex; } }
     private int stageIndex;
-    public int StageIndex { get { return stageIndex;}}
+    public int StageIndex { get { return stageIndex; } }
 
     private const float restartWaitTime = 0.2f;
     private const float exitWaitTime = 1f;
@@ -24,7 +25,10 @@ public class InGameManager : MonoBehaviour {
     private void Start()
     {
         MapManager.instance.GenerateMap();
-        ShowStageInfo();
+        if (HandOverData.ShowStageInfo)
+        {
+            ShowStageInfo();
+        }
     }
 
     public void NewPhase()
@@ -39,26 +43,18 @@ public class InGameManager : MonoBehaviour {
     {
         if (Scheduler.instance.CurrentCycle == Scheduler.GameCycle.InputTime)
         {
-        HistoryManager.instance.RollBack();
+            HistoryManager.instance.RollBack();
         }
-        
+
     }
 
     private void ShowStageInfo()
     {
-        GameObject.Find("Fader").GetComponent<ImageFader>().BlackOut();
-        float fadeTime;
-        if (HandOverData.ShowStageInfo)
-        {
-            FadeInStageInfo();
-            Invoke("FadeOutStageInfo", 1f);
-            fadeTime = 2f;
-        }
-        else
-        {
-            fadeTime = 0.5f;
-        }
-        Invoke("FadeIn",fadeTime);
+        FadeIn();
+
+        FadeInStageInfo();
+        Invoke("FadeOutStageInfo", 3f);
+
     }
 
     /// <summary>
@@ -92,7 +88,7 @@ public class InGameManager : MonoBehaviour {
     /// </summary>
     public void Pause()
     {
-        GameObject pause=GameObject.Find("Pause");
+        GameObject pause = GameObject.Find("Pause");
         pause.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
         pause.transform.Find("ExitButton").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => Exit(MainManager.View.StageSelect));
         pause.transform.Find("RestartButton").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() => Restart());
@@ -103,7 +99,7 @@ public class InGameManager : MonoBehaviour {
     /// </summary>
     public void PauseEnd()
     {
-        GameObject.Find("Pause").GetComponent<RectTransform>().anchoredPosition = new Vector3(2000,2000,0);
+        GameObject.Find("Pause").GetComponent<RectTransform>().anchoredPosition = new Vector3(2000, 2000, 0);
     }
 
     /// <summary>
@@ -112,7 +108,7 @@ public class InGameManager : MonoBehaviour {
     public void Exit(MainManager.View mainView)
     {
         HandOverData.mainView = mainView;
-        StartCoroutine(ChangeScene(SceneName.main,0,exitWaitTime));
+        StartCoroutine(ChangeScene(SceneName.main, 0, exitWaitTime));
     }
 
     /// <summary>
@@ -121,7 +117,7 @@ public class InGameManager : MonoBehaviour {
     public void Restart()
     {
         HandOverData.ShowStageInfo = false;
-        StartCoroutine(ChangeScene(SceneName.inGameScene,0,restartWaitTime));
+        StartCoroutine(ChangeScene(SceneName.inGameScene, 0, restartWaitTime));
     }
 
     /// <summary>
@@ -134,20 +130,20 @@ public class InGameManager : MonoBehaviour {
         if (HandOverData.WorldIndex == -1)
         {
             //mapedit
-            StartCoroutine(ChangeScene(SceneName.mapEdit,0,exitWaitTime));
+            StartCoroutine(ChangeScene(SceneName.mapEdit, 0, exitWaitTime));
         }
-        else if (HandOverData.StageIndex==StageList.GetWorldSize(HandOverData.WorldIndex)-1)
+        else if (HandOverData.StageIndex == StageList.GetWorldSize(HandOverData.WorldIndex) - 1)
         {
-            StageList.UnLock(HandOverData.WorldIndex+1,0);
+            StageList.UnLock(HandOverData.WorldIndex + 1, 0);
             HandOverData.WorldIndex++;
             Exit(MainManager.View.StageSelect);
         }
         else
         {
             HandOverData.StageIndex++;
-            StageList.UnLock(HandOverData.WorldIndex,HandOverData.StageIndex);
+            StageList.UnLock(HandOverData.WorldIndex, HandOverData.StageIndex);
             HandOverData.StageName = StageList.GetStageName(HandOverData.WorldIndex, HandOverData.StageIndex);
-            StartCoroutine(ChangeScene(SceneName.inGameScene,3.5f,exitWaitTime));
+            StartCoroutine(ChangeScene(SceneName.inGameScene, 3.5f, exitWaitTime));
         }
     }
 
@@ -157,10 +153,10 @@ public class InGameManager : MonoBehaviour {
     /// </summary>
     /// <param name="sceneName"></param>
     /// <returns></returns>
-    private IEnumerator ChangeScene(string sceneName,float beforeTime,float waitTime)
+    private IEnumerator ChangeScene(string sceneName, float beforeTime, float waitTime)
     {
         const float changeTime = 0.3f;
-        BackGround.instance.transform.Find("BackgroundMusic").GetComponent<AudioFader>().Transparent(changeTime+waitTime);
+        BackGround.instance.transform.Find("BackgroundMusic").GetComponent<AudioFader>().Transparent(changeTime + waitTime);
         yield return new WaitForSeconds(beforeTime);
         GameObject.Find("Fader").GetComponent<ImageFader>().Opaque(changeTime);
         yield return new WaitForSeconds(changeTime);
@@ -193,6 +189,7 @@ public class InGameManager : MonoBehaviour {
         const float time = 0.3f;
         GameObject.Find("Title").GetComponent<TextFader>().Transparent(time);
         GameObject.Find("Chapter").GetComponent<TextFader>().Transparent(time);
+        GameObject.Find("StageInfoBackGround").GetComponent<ImageFader>().Transparent(time);
     }
 
     private void FadeInStageInfo()
@@ -200,5 +197,6 @@ public class InGameManager : MonoBehaviour {
         const float time = 0.2f;
         GameObject.Find("Title").GetComponent<TextFader>().Opaque(time);
         GameObject.Find("Chapter").GetComponent<TextFader>().Opaque(time);
+        GameObject.Find("StageInfoBackGround").GetComponent<ImageFader>().Opaque(time);
     }
 }

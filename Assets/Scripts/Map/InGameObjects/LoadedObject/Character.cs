@@ -47,6 +47,8 @@ public class Character : DestroyableObject
         //영혼
         GameObject spiritpref = Resources.Load<GameObject>("Prefab/InGameObject/Spirit");
         GameObject spirit = Instantiate(spiritpref, currentPos.ToVector3(),Quaternion.identity);
+        GameObject debrispref = Resources.Load<GameObject>("Prefab/InGameObject/Debris");
+        GameObject debris = Instantiate(debrispref, currentPos.ToVector3(), Quaternion.identity);
         spirit.GetComponent<Spirit>().InitSetting(GenPoint.ActivatingGenPoint.CurrentPos.ToVector3(),respawnDelayTime);
         //gen point 에서 다시 살아남
         Position lastPos = currentPos;
@@ -119,7 +121,7 @@ public class Character : DestroyableObject
     /// <param name="direction"></param>
     public void MoveOrderEnqueue(Position direction)
     {
-        if (isMoving||!canMove)
+        if (Scheduler.instance.CurrentCycle!=Scheduler.GameCycle.InputTime || !canMove)
         {
             moveDirQueue.Enqueue(direction);
         }
