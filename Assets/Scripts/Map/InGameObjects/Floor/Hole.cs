@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hole : FlipButton{
+public class Hole : DisposableButton{
     protected override void Awake()
     {
         base.Awake();

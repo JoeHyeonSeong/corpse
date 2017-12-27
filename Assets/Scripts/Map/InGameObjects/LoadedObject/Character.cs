@@ -140,6 +140,10 @@ public class Character : DestroyableObject
         {
             InGameManager.instance.RollBack();
         }
+        else//이동 성공
+        {
+            transform.Find("MoveSound").GetComponent<SoundEffectCtrl>().Play();
+        }
     }
 
     protected override void MoveEnd()
