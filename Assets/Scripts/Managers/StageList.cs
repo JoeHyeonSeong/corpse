@@ -16,10 +16,10 @@ public static class StageList
     private static bool[] lockInfo;
 
     //각각의 월드에 스테이지가 몇개인지
-    private static int[] StageNo = new int[] { 17, 0, 0 };
+    private static int[] StageNo = new int[] { 18, 0, 0 };
     private static string[,] stageList = new string[,] {
-        {"jslevel1","jslevel2","jslevel3","jslevel4","jslevel5","jslevel6","jslevel7","jslevel8b",//world0
-        "jsLevel9","jslevel10","jslevel11","jslevel12","jslevel13","jslevel14","jslevel15","JS1","JS2"//world1
+        {"jslevel0","jslevel1","jslevel2","jslevel3","jslevel4","jslevel9","b1","Jslevel6",//world0
+        "Js1","jslevel7","jslevel5","a3","jslevel11","jslevel14","jslevel13","Jslevel15","Jslevel8b","Js2a"//world1
         }//world2
     };
 
@@ -55,6 +55,9 @@ public static class StageList
             foreach (int num in StageNo) totalStageNum += num;
             lockInfo = new bool[totalStageNum];
             lockInfo[0] = true;
+            //for debug
+            for (int i = 0; i < lockInfo.Length; i++) lockInfo[i] = true;
+            //
             string newJsonData = JsonUtility.ToJson(new BoolWrapper(lockInfo));
             PlayerPrefs.SetString(PrefsKey.lockInfo, newJsonData);
         }

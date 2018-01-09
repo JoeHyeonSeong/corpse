@@ -29,6 +29,11 @@ public class InGameManager : MonoBehaviour
         {
             ShowStageInfo();
         }
+        //tutorial
+        if (StageIndex == 0)
+        {
+            GameObject.Find("PointingHands").GetComponent<UnityEngine.UI.Image>().enabled = true;
+        }
     }
 
     public void NewPhase()
@@ -143,6 +148,7 @@ public class InGameManager : MonoBehaviour
             HandOverData.StageIndex++;
             StageList.UnLock(HandOverData.WorldIndex, HandOverData.StageIndex);
             HandOverData.StageName = StageList.GetStageName(HandOverData.WorldIndex, HandOverData.StageIndex);
+            Debug.Log("world" + HandOverData.WorldIndex + "stage" + HandOverData.StageIndex);
             StartCoroutine(ChangeScene(SceneName.inGameScene, 3.5f, exitWaitTime));
         }
     }

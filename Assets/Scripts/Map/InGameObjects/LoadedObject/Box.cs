@@ -19,15 +19,23 @@ public class Box : DestroyableObject {
     /// 
     public override void Destroy()
     {
-        //우주로 보내기
-        Move(new Position(100,100),false);
+
+            isDestroyed = true;
+            //파편 생성
+            GameObject debris = (GameObject)Resources.Load<GameObject>("Prefab/InGameObject/BoxDebris");
+            Instantiate(debris, currentPos.ToVector3(), Quaternion.identity);
+            //우주로 보내기
+            Move(new Position(100, 100), false);
     }
-    public override void Push(MovableObject who, Position dir)
+    public override bool Push(MovableObject who, Position dir)
     {
         if (MapManager.instance.Find(typeof(Hole),currentPos)==null)//hole위에 있지않을때
         {
-            base.Push(who, dir);
+            bool result= base.Push(who, dir);
+            if(result) transform.Find("MoveSound").GetComponent<SoundEffectCtrl>().Play();
+            return result;
         }
+        return false;
     }
 
     public void SetColor(bool on)

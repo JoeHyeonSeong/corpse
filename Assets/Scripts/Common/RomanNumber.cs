@@ -13,7 +13,7 @@ public class RomanNumber : MonoBehaviour {
 
         if (n <= 0)
         {
-        throw new System.Exception();
+            return n.ToString();
         }
 
         System.Text.StringBuilder buf = new System.Text.StringBuilder();

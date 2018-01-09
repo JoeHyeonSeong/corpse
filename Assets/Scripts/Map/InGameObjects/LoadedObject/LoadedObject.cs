@@ -9,7 +9,7 @@ public abstract class LoadedObject : InGameObject {
     }
     protected bool isObstacle=true;
     public bool IsObstacle { get { return isObstacle; } }
-    abstract public void Push(MovableObject who,Position dir);
+    abstract public bool Push(MovableObject who,Position dir);
 
     public override void Teleport(Position des)
     {

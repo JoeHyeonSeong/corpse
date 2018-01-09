@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hole : DisposableButton{
+public class Hole : FlipButton{
     protected override void Awake()
     {
         base.Awake();
@@ -16,6 +16,14 @@ public class Hole : DisposableButton{
         {
             ((Box)who).SetColor(true);
             base.Step(who);
+        }
+    }
+
+    public override void Leave(MovableObject who)
+    {
+        if (who.GetType() == typeof(Box))
+        {
+            base.Leave(who);
         }
     }
 }

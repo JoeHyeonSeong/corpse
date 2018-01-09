@@ -9,12 +9,13 @@ public class MainManager : MonoBehaviour
     private ViewController stageSelectCon;
     private ViewController optionCon;
     private ViewController currentCon;
+    private ViewController creditCon;
 
     private GameObject backButton;
 
     private bool isSceneChanging;//현재 씬이 넘어가는중
 
-    public enum View { Start, StageSelect, Option };
+    public enum View { Start, StageSelect, Option,Credits };
     private View currentView;
     public static MainManager instance;
 
@@ -41,6 +42,7 @@ public class MainManager : MonoBehaviour
         //worldSelectCon = GameObject.Find("WorldSelect").GetComponent<ViewController>();
         stageSelectCon = GameObject.Find("StageSelect").GetComponent<ViewController>();
         optionCon = GameObject.Find("Option").GetComponent<ViewController>();
+        creditCon= GameObject.Find("Credits").GetComponent<ViewController>();
         backButton = GameObject.Find("BackButton");
     }
 
@@ -104,6 +106,9 @@ public class MainManager : MonoBehaviour
                 case View.Option:
                     GoToStart();
                     break;
+                case View.Credits:
+                    GoToStart();
+                    break;
                 default:
                     Debug.Log("메뉴 이동 예외");
                     break;
@@ -131,7 +136,10 @@ public class MainManager : MonoBehaviour
     {
         if (isSceneChanging == false)
         {
-            StartCoroutine(GoToStageSelectRoutine(worldIndex));
+            SetCurrentDat(View.StageSelect, stageSelectCon);
+            ((StageSelectController)stageSelectCon).Open(worldIndex);
+            stageSelectCon.Open();
+            backButton.SetActive(true);
         }
     }
 
@@ -146,23 +154,21 @@ public class MainManager : MonoBehaviour
     }
 
     
-    private IEnumerator GoToStageSelectRoutine(int worldIndex)
+
+    private IEnumerator FadeOut()
     {
-        const float zoomTime = 1f;
-        const float returnTime = 0.1f;
-        MainCamCtrl.instance.Zoom(zoomTime, true);
-        startCon.transform.Find("Fade").GetComponent<ImageFader>().Opaque(zoomTime);
-        yield return new WaitForSeconds(zoomTime+0.1f);
-        MainCamCtrl.instance.GoToOriginalSize();
-        yield return new WaitForSeconds(returnTime+0.1f);
-        SetCurrentDat(View.StageSelect, stageSelectCon);
-        ((StageSelectController)stageSelectCon).Open(worldIndex);
-        backButton.SetActive(true);
-        isSceneChanging = false;
-        startCon.transform.Find("Fade").GetComponent<ImageFader>().Transparent(returnTime);
-        yield return null;
+        const float opaqueTime = 0.3f;
+        startCon.transform.parent.Find("Fade").GetComponent<ImageFader>().Opaque(opaqueTime);
+        yield return new WaitForSeconds(opaqueTime + 0.1f);
     }
 
+    private IEnumerator FadeIn()
+    {
+        const float transparentTime = 0.3f;
+        startCon.transform.parent.Find("Fade").GetComponent<ImageFader>().Transparent(transparentTime);
+        isSceneChanging = false;
+        yield return new WaitForSeconds(transparentTime + 0.1f);
+    }
     /*
     public void GoToWorldSelect()
     {
@@ -176,6 +182,13 @@ public class MainManager : MonoBehaviour
     {
         SetCurrentDat(View.Option, optionCon);
         optionCon.Open();
+        backButton.SetActive(true);
+    }
+
+    public void GoToCredits()
+    {
+        SetCurrentDat(View.Credits, creditCon);
+        creditCon.Open();
         backButton.SetActive(true);
     }
 }

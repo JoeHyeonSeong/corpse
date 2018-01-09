@@ -20,6 +20,7 @@ public class StageInfo : MonoBehaviour
     {
         this.life = life;
         this.title = title;
+        Debug.Log(title);
         SetStageInfoUI();
     }
 
@@ -29,7 +30,7 @@ public class StageInfo : MonoBehaviour
         {
             GameObject.Find("Title").GetComponent<TextFader>().SetText(title);
             GameObject.Find("Chapter").GetComponent<TextFader>().
-                SetText((InGameManager.instance.WorldIndex+1).ToString()+" - "+ (InGameManager.instance.StageIndex+1).ToString());
+                SetText(("Stage "+ RomanNumber.Roman(InGameManager.instance.StageIndex+1)));
         }
     }
 }

@@ -14,7 +14,7 @@ public class StartController :ViewController {
             AddListener(() => MainManager.instance.GoToStageSelect(0));
         transform.Find("OptionButton").GetComponent<Button>().onClick.
             AddListener(() => MainManager.instance.GoToOption());
-        transform.Find("ResetButton").GetComponent<Button>().onClick.
-            AddListener(() => PlayerPrefs.DeleteAll());
+        //transform.Find("ResetButton").GetComponent<Button>().onClick.
+        //    AddListener(() => PlayerPrefs.DeleteAll());
     }
 }

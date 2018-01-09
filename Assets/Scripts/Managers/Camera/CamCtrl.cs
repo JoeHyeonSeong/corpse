@@ -10,7 +10,7 @@ public class CamCtrl : MonoBehaviour {
     protected const float minMoveTime = 0.1f;
     protected const float zoomMoveTime=0.1f;
     protected const float maxInterval = 0.1f;
-    protected const float sideInterval = 0.6f;
+    protected const float sideInterval = 1.5f;
     protected const int zPos = -10;
     protected readonly Vector3 camPosAdjust = Vector3.zero;
 #endregion// constants

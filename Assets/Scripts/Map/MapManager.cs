@@ -40,7 +40,9 @@ public class MapManager : MonoBehaviour {
             Transform layer = currentMap.transform.GetChild(i);
             for (int j = 0; j <layer.childCount; j++)
             {
-                Vector2 childPos = layer.GetChild(j).position;
+                InGameObject inGameObj = layer.GetChild(j).GetComponent<InGameObject>();
+                if (inGameObj == null) continue;
+                Vector2 childPos = inGameObj.CurrentPos.ToVector3();
                 if (childPos.x > maxX) maxX = childPos.x;
                 if (childPos.x < minX) minX = childPos.x;
                 if (childPos.y > maxY) maxY = childPos.y;

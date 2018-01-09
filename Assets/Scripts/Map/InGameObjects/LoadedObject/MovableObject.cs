@@ -29,7 +29,7 @@ public class MovableObject : LoadedObject
     protected Position lastPos;
 
 
-    public override void Push(MovableObject who, Position dir)
+    public override bool Push(MovableObject who, Position dir)
     {
         Position des = currentPos + dir;
         if (MapManager.instance.CanGo(des))
@@ -51,7 +51,9 @@ public class MovableObject : LoadedObject
             {
                 Move(des, true);
             }
+            return true;
         }
+        return false;
     }
 
     protected override void Awake()
@@ -66,7 +68,7 @@ public class MovableObject : LoadedObject
     /// <param name="destination"></param>
     /// <param name="isSliding"></param>
     /// <param name="anim"></param>
-    public virtual void Move(Position destination, bool anim)
+    public virtual bool Move(Position destination, bool anim)
     {
         Position tempDir = destination - currentPos;
         //push
@@ -93,8 +95,12 @@ public class MovableObject : LoadedObject
             {
                 MoveEnd();
             }
+            return true;
         }
-
+        else
+        {
+            return false;
+        }
     }
 
     /// <summary>

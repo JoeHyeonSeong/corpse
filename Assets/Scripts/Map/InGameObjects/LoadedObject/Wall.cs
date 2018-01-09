@@ -8,9 +8,9 @@ public class Wall : LoadedObject {
     /// do nothing
     /// </summary>
     /// <param name="who"></param>
-    public override void Push(MovableObject who,Position dir)
+    public override bool Push(MovableObject who,Position dir)
     {
-        
+        return false;
     }
 
     protected override void Awake()

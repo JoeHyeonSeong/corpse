@@ -15,6 +15,14 @@ public class StageLoader : MonoBehaviour {
     public List<Transform> tiles;
     private List<Vector3> currentTrigger;
     private Transform[,,] gameObjects;
+    public Transform[,,] GameObjects
+    {
+        get
+        {
+            return gameObjects;
+        }
+    }
+
     static public StageLoader instance;
 
     private void Awake()

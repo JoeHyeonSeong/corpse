@@ -7,7 +7,7 @@ public class Character : DestroyableObject
 {
     private const float respawnDelayTime = 1;
     private bool canMove=true;
-
+    
     public static Character instance;
 
     private Queue<Position> moveDirQueue = new Queue<Position>();
@@ -29,10 +29,10 @@ public class Character : DestroyableObject
 
     public override void Destroy()
     {
-        // life--;
-        //SetLifeText();
-        canMove = false;
-        Revive();
+
+            isDestroyed = true;
+            canMove = false;
+            Revive();
     }
 
     private void Revive()
@@ -48,7 +48,7 @@ public class Character : DestroyableObject
         GameObject spiritpref = Resources.Load<GameObject>("Prefab/InGameObject/Spirit");
         GameObject spirit = Instantiate(spiritpref, currentPos.ToVector3(),Quaternion.identity);
         GameObject debrispref = Resources.Load<GameObject>("Prefab/InGameObject/Debris");
-        GameObject debris = Instantiate(debrispref, currentPos.ToVector3(), Quaternion.identity);
+        Instantiate(debrispref, currentPos.ToVector3(), Quaternion.identity);
         spirit.GetComponent<Spirit>().InitSetting(GenPoint.ActivatingGenPoint.CurrentPos.ToVector3(),respawnDelayTime);
         //gen point 에서 다시 살아남
         Position lastPos = currentPos;
@@ -64,6 +64,7 @@ public class Character : DestroyableObject
     private void Respawn()
     {
         Teleport(GenPoint.ActivatingGenPoint.CurrentPos);
+        isDestroyed = false;
         StartCoroutine(RespawnDelay());
     }
 
@@ -79,9 +80,9 @@ public class Character : DestroyableObject
         MoveOrderDequeue();
     }
 
-    public override void Move(Position destination, bool anim)
+    public override bool Move(Position destination, bool anim)
     {
-        base.Move(destination, anim);
+        bool result=base.Move(destination, anim);
         bool flipX = transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX;
         if (moveDir == new Position(1, 0))
         {
@@ -92,6 +93,7 @@ public class Character : DestroyableObject
             flipX = false;
         }
         transform.Find("Sprite").GetComponent<SpriteRenderer>().flipX = flipX;
+        return result;
     }
 
 
@@ -139,10 +141,6 @@ public class Character : DestroyableObject
         if (initPos == Character.instance.CurrentPos)
         {
             InGameManager.instance.RollBack();
-        }
-        else//이동 성공
-        {
-            transform.Find("MoveSound").GetComponent<SoundEffectCtrl>().Play();
         }
     }
 

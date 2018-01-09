@@ -7,7 +7,7 @@ public class TouchButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
 {
     Vector2 pressStartPos;
 
-    const float dragThreshold = 50f;
+    const float dragThreshold = 30f;
 
     private bool alreadyMove;
     private bool showInfo = false;//기다리는동안 false가 안된다면 클릭했던것의 정보 보여줌
@@ -57,6 +57,7 @@ public class TouchButton : MonoBehaviour, IPointerUpHandler, IPointerDownHandler
                 }
             }
             Character.instance.MoveOrderEnqueue(result);
+            Destroy(GameObject.Find("PointingHands"));
             alreadyMove = true;
         }
     }

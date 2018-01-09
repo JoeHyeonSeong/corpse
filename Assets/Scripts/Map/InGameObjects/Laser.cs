@@ -45,13 +45,13 @@ public class Laser : InGameObject
             {
                 if (temp.GetType().IsSubclassOf(typeof(DestroyableObject)))
                 {
-                    ((DestroyableObject)temp).Destroy();
-                    return;
+                    if (!((DestroyableObject)temp).IsDestroyed)
+                    {
+                        ((DestroyableObject)temp).Destroy();
+                        return;
+                    }
                 }
-                else
-                {
                     tempEndPos = temp.CurrentPos;
-                }
                 break;
             }
         }
@@ -94,7 +94,6 @@ public class Laser : InGameObject
     private void SetLaserShape()
     {
         Transform back = mygraphic.Find("Back");
-        Transform front = mygraphic.Find("Front");
         transform.Find("Sprite").GetComponent<SpriteRenderer>().size = new Vector2(1, Mathf.Abs(laserLength)-2);
         back.localPosition = new Vector3(0, Mathf.Abs(laserLength)-1);
         if (Mathf.Abs(laserLength) <= 1)
