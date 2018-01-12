@@ -58,6 +58,7 @@ public class Character : DestroyableObject
         if (isMoving && underIce != null)//움직이는 중이고 밑에 얼음 있음
         {
             mycorpse.GetComponent<Corpse>().Slide(lastPos + moveDir, true);
+            //mycorpse.GetComponent<Corpse>().Move(lastPos + MoveDir, true);
         }
     }
 

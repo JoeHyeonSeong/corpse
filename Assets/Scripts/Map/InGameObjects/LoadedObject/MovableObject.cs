@@ -76,6 +76,7 @@ public class MovableObject : LoadedObject
 
         if (MapManager.instance.CanGo(destination))
         {
+            Debug.Log(this.name);
             //can go to destination
             lastPos = currentPos;
             //change current position
@@ -161,6 +162,7 @@ public class MovableObject : LoadedObject
                 break;
             }
             fl.Step(this);
+            Debug.Log("밟은 것들"+fl.name);
         }
     }
 
@@ -195,9 +197,7 @@ public class MovableObject : LoadedObject
         //push
         foreach (InGameObject obj in desBlockData)
         {
-            if (obj.GetType().IsSubclassOf(typeof(LoadedObject))//pushable
-               &&!(MapManager.instance.Find(typeof(Ice),currentPos)!=null&&
-               MapManager.instance.Find(typeof(DefaultFloor),at) != null && isMoving))
+            if (obj.GetType().IsSubclassOf(typeof(LoadedObject)))//pushable
             {
                     ((LoadedObject)obj).Push(this, tempDir);
                     push = true;
@@ -211,6 +211,7 @@ public class MovableObject : LoadedObject
         if (isMoving || haveToMove)
         {
             bool pushResult = PushCheck(destination);
+            Debug.Log(pushResult);
             if (pushResult == false)
             {
                 Move(destination, true);

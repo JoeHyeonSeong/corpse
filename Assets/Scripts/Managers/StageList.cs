@@ -56,7 +56,7 @@ public static class StageList
             lockInfo = new bool[totalStageNum];
             lockInfo[0] = true;
             //for debug
-            for (int i = 0; i < lockInfo.Length; i++) lockInfo[i] = true;
+           // for (int i = 0; i < lockInfo.Length; i++) lockInfo[i] = true;
             //
             string newJsonData = JsonUtility.ToJson(new BoolWrapper(lockInfo));
             PlayerPrefs.SetString(PrefsKey.lockInfo, newJsonData);

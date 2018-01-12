@@ -75,6 +75,7 @@ public abstract class InGameObject : MonoBehaviour
     public virtual void AddActiveStack()
     {
         activatingPoint++;
+        Debug.Log(activatingPoint + this.name);
         if (activatingPoint == activateThreshold)
         {
             FlipActiveStatus();

@@ -21,6 +21,7 @@ public class FlipButton : Floor {
 
     public override void Leave(MovableObject who)
     {
+        Debug.Log("leave");
         ButtonOff();
     }
 

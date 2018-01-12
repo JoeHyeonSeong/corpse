@@ -29,6 +29,10 @@ public class InGameManager : MonoBehaviour
         {
             ShowStageInfo();
         }
+        else
+        {
+            HandOverData.ShowStageInfo = true;
+        }
         //tutorial
         if (StageIndex == 0)
         {
